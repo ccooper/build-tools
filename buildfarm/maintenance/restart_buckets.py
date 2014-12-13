@@ -3,11 +3,12 @@
 import os
 import requests
 import simplejson as json
-from slaveapi.clients import ssh
 import socket
 import time
 
 from furl import furl
+from paramiko import AuthenticationException
+from slaveapi.clients import ssh
 
 import logging
 from logging.handlers import RotatingFileHandler
@@ -19,10 +20,9 @@ formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 log.addHandler(handler)
 
-from paramiko import SSHClient, AuthenticationException
-
 buckets = {}
 running_buckets = {}
+completed_masters = {}
 SLEEP_INTERVAL = 60
 ssh_key = "/Users/ccooper/.ssh/id_dsa"
 username = "cltbld"
@@ -38,7 +38,7 @@ def put_masters_in_buckets(masters_json, master_list=None):
         if master_list:
             if master['hostname'].split('.')[0] not in master_list:
                 continue
-        
+
         bucket_key = master['name'].split('-',1)[1]
         # We can parallelize restarts more in AWS because we're in different regions,
         # so make separate buckets for cloud pools.
@@ -47,8 +47,7 @@ def put_masters_in_buckets(masters_json, master_list=None):
         if bucket_key not in buckets:
             buckets[bucket_key] = []
         buckets[bucket_key].append(master)
-        # XXX: work with a single master for now
-        return
+    return
 
 def masters_remain():
     for key in running_buckets:
@@ -89,6 +88,18 @@ def get_console(hostname):
         return None  # No valid console
     return None  # How did we get here?
 
+def stop_master(master):
+    # For scheduler masters, we just stop them.
+    log.info("Stopping %s" % master['hostname'])
+    cmd = "cd %s; source bin/activate; make stop" % master['basedir']
+    console = get_console(master['hostname'])
+    rc, output = console.run_cmd(cmd)
+    if rc == 0:
+        log.info("%s stopped successfully." % master['hostname'])
+        return True
+    log.warning("Failed to stop %s, or never saw stop finish." % master['hostname'])
+    return False
+
 def graceful_shutdown(master):
     # We do graceful shutdowns through the master's web interface
     log.info("Initiating graceful shutdown for %s" % master['hostname'])
@@ -113,13 +124,16 @@ def check_shutdown_status(master):
     log.info("Checking shutdown status of master: %s" % master['hostname'])
     cmd="ps auxww | grep python | grep start | grep %s" % master['master_dir']
     console = get_console(master['hostname'])
-    rc, output = console.run_cmd(cmd)
-    if rc != 0:
-        log.info("No master process found on %s." % master['hostname'])
-        return True
-    log.info("Master process still exists on %s." % master['hostname'])
+    try:
+        rc, output = console.run_cmd(cmd)
+        if rc != 0:
+            log.info("No master process found on %s." % master['hostname'])
+            return True
+        log.info("Master process still exists on %s." % master['hostname'])
+    except ssh.RemoteCommandError:
+        log.warning("Caught exception while checking shutdown status. Will retry on next pass.")
     return False
-        
+
 def restart_master(master):
     # Restarts buildbot on the remote master
     log.info("Attempting to restart master: %s" % master['hostname'])
@@ -132,23 +146,47 @@ def restart_master(master):
     log.warning("Restart of master %s failed, or never saw restart finish." % master['hostname'])
     return False
 
+def display_running():
+    log.info("")
+    log.info("Masters still being processed")
+    log.info("{:<30} {}".format("bucket","master URL"))
+    log.info("{:<30} {}".format("======","=========="))
+    for key in sorted(running_buckets.iterkeys()):
+        if running_buckets[key]['role'] == 'scheduler':
+            log.info("{:<30} {}".format(key, running_buckets[key]['hostname']))
+        else:
+            log.info("{:<30} http://{}:{}".format(key, running_buckets[key]['hostname'], running_buckets[key]['http_port']))
+
+def display_completed():
+    log.info("")
+    log.info("Masters restarted (or at least attempted)")
+    log.info("{:<30} {}".format("bucket","master URL"))
+    log.info("{:<30} {}".format("======","=========="))
+    for key in sorted(completed_masters.iterkeys()):
+        for master in completed_masters[key]:
+            if master['role'] == 'scheduler':
+                log.info("{:<30} {}".format(key, master['hostname']))
+            else:
+                log.info("{:<30} http://{}:{}".format(key, master['hostname'], master['http_port']))
+
+
 if __name__ == '__main__':
     import argparse
     import sys
-    
+
     parser = argparse.ArgumentParser(description='Gracefully restart a list of buildbot masters')
     parser.add_argument("-v", "--verbose", dest="verbose", action="store_true",
                         help="Enable extra debug output")
     parser.add_argument("-m", "--masters-json", action="store", dest="masters_json", help="JSON file containing complete list of masters", required=True)
     parser.add_argument("-l", "--limit-to-masters", action="store", dest="limit_to_masters", help="Test file containing list of masters to restart, one per line", default=None)
-    
+
     args = parser.parse_args()
 
     if args.verbose:
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
     else:
-        logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")        
-        
+        logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
     if not os.path.isfile(args.masters_json):
         log.error("Masters JSON file ('%s') does not exist. Exiting..." % args.masters_json)
         sys.exit(1)
@@ -159,7 +197,7 @@ if __name__ == '__main__':
             log.warning("Masters limit file ('%s') does not exist. Skipping..." % args.limit_to_masters)
         else:
             master_list = [line.strip() for line in open(args.limit_to_masters)]
-            
+
     json_data = open(args.masters_json)
     masters_json = json.load(json_data)
 
@@ -169,7 +207,7 @@ if __name__ == '__main__':
     #pp = pprint.PrettyPrinter(indent=4)
     #pp.pprint(buckets)
     #sys.exit(1)
-    
+
     while masters_remain():
         # Refill our running buckets.
         # If we add a new master, we need to kick off the graceful shutdown too.
@@ -179,20 +217,30 @@ if __name__ == '__main__':
             else:
                 if buckets[key]:
                     running_buckets[key] = buckets[key].pop()
-                    #graceful_shutdown(running_buckets[key])
+                    if running_buckets[key]['role'] == "scheduler":
+                        stop_master(running_buckets[key])
+                    else:
+                        graceful_shutdown(running_buckets[key])
 
-        #log.debug(running_buckets)
-                    
         keys_processed = []
         for key in running_buckets:
             if check_shutdown_status(running_buckets[key]):
                 if not restart_master(running_buckets[key]):
                     log.warning("Failed to restart master (%s). Please investigate by hand." % running_buckets[key]['hostname'])
                 # Either way, we remove this master so we can proceed.
+                if key not in completed_masters:
+                    completed_masters[key] = []
+                completed_masters[key].append(running_buckets[key].copy())
                 keys_processed.append(key)
+
         for key in keys_processed:
             del running_buckets[key]
-            
+
         if masters_remain():
+            display_completed()
+            display_running()
             log.info("Sleeping for %ds" % SLEEP_INTERVAL)
             time.sleep(SLEEP_INTERVAL)
+
+    log.info("All masters processed. Exiting")
+    display_completed()
