@@ -1,5 +1,23 @@
 #!/usr/bin/env python
 
+# restart_masters.py
+#
+# Buildbot-masters gradually consume more resources the longer they stay up.
+# To combat this, we've begun manually restarting masters once a month. This
+# script attempts to automate that manual process.
+#
+# The basic workflow is this:
+#  * lookup the list of all enabled masters in production-masters.json
+#  * prune that list based on an optional list of masters to target
+#  * put the masters into buckets by type and datacenter:
+#  ** We only process one master per bucket at a given time. This is to
+#     minimize our impact on capacity.
+#  * disable each master in slavealloc
+#  * exceute a graceful shutdown of that master via it's web interface
+#  * wait for the master process to disappear, then restart buildbot
+#  * on each interation, check for masters that have finished, pick a new master
+#    from that same bucket, and begin the restart process for that master
+
 import os
 import requests
 import simplejson as json
@@ -23,9 +41,13 @@ log.addHandler(handler)
 buckets = {}
 running_buckets = {}
 completed_masters = {}
+master_ids = {}
 SLEEP_INTERVAL = 60
 ssh_key = "/Users/ccooper/.ssh/id_dsa"
 username = "cltbld"
+slavealloc_api_url = "https://secure.pub.build.mozilla.org/slavealloc/api/masters"
+ldap_username = None
+ldap_password = None
 
 def IgnorePolicy():
     def missing_host_key(self, *args):
@@ -100,22 +122,61 @@ def stop_master(master):
     log.warning("Failed to stop %s, or never saw stop finish." % master['hostname'])
     return False
 
+def get_master_ids():
+    r = requests.get(slavealloc_api_url, auth=(ldap_username,ldap_password))
+    if r.status_code != 200:
+        log.error("Unable to retrieve masters from slavealloc. Check LDAP credentials.")
+        return False
+    for master in r.json():
+        master_ids[str(master['nickname'])] = master['masterid']
+    if not master_ids:
+        return False
+    return True
+
+def http_post(post_url, error_msg):
+    try:
+        requests.post(str(post_url), allow_redirects=False)
+    except requests.RequestException:
+        log.error(error_msg)
+        return False
+    return True
+
+def http_put(put_url, put_data, error_msg):
+    try:
+        r = requests.put(put_url, data=json.dumps(put_data), allow_redirects=False, auth=(ldap_username, ldap_password))
+        if r.status_code == 200:
+            return True
+    except requests.RequestException:
+        log.error(error_msg)
+        return False
+    return True
+
+def disable_master(master):
+    # Disable the master in slavealloc while we're restarting.
+    # This shuold avoid new slaves from connecting during shutdown
+    # and possibly getting hung.
+    log.info("Disabling %s in slavealloc." % master['hostname'])
+    disable_url = furl(slavealloc_api_url + "/" + str(master_ids[master['name']]))
+    put_data = {"enabled": 0}
+    error_msg = "Failed to disable %s" % master['hostname']
+    return http_put(str(disable_url), put_data, error_msg)
+
+def enable_master(master):
+    # Re-enable the master in slavealloc after it has been restarted.
+    log.info("Re-enabling %s in slavealloc." % master['hostname'])
+    enable_url = furl(slavealloc_api_url + "/" + str(master_ids[master['name']]))
+    put_data = {"enabled": 1}
+    error_msg = "Failed to re-enable %s" % master['hostname']
+    return http_put(str(enable_url), put_data, error_msg)
+
 def graceful_shutdown(master):
     # We do graceful shutdowns through the master's web interface
     log.info("Initiating graceful shutdown for %s" % master['hostname'])
     shutdown_url = furl("http://" + master['hostname'])
     shutdown_url.port = master['http_port']
     shutdown_url.path = "shutdown"
-    try:
-        # Disabling redirects is important here - otherwise we'll load a
-        # potentially expensive page from the Buildbot master. The response
-        # code is good enough to confirm whether or not initiating this worked
-        # or not anyways.
-        requests.post(str(shutdown_url), allow_redirects=False)
-    except requests.RequestException:
-        log.error("Failed to initiate graceful shutdown for %s" % master['hostname'])
-        return False
-    return True
+    error_msg = "Failed to initiate graceful shutdown for %s" % master['hostname']
+    return http_post(str(shutdown_url), error_msg)
 
 def check_shutdown_status(master):
     # Returns true when there is no matching master process.
@@ -191,6 +252,14 @@ if __name__ == '__main__':
         log.error("Masters JSON file ('%s') does not exist. Exiting..." % args.masters_json)
         sys.exit(1)
 
+    ldap_username = raw_input("Enter LDAP username: ")
+    ldap_password = raw_input("Enter LDAP password: ")
+
+    # Getting the master IDs allown us to valid the LDAP credentials while also
+    # getting a list of master IDS we can use when disabling masters in slavealloc.
+    if not get_master_ids():
+        sys.exit(2)
+
     master_list = []
     if args.limit_to_masters:
         if not os.path.isfile(args.limit_to_masters):
@@ -220,14 +289,19 @@ if __name__ == '__main__':
                     if running_buckets[key]['role'] == "scheduler":
                         stop_master(running_buckets[key])
                     else:
-                        graceful_shutdown(running_buckets[key])
+                        if disable_master(running_buckets[key]):
+                            log.info("Disabled %s in slavealloc." % running_buckets[key]['hostname'])
+                        if graceful_shutdown(running_buckets[key]):
+                            log.info("Initiated graceful_shutdown of %s." % running_buckets[key]['hostname'])
 
         keys_processed = []
         for key in running_buckets:
             if check_shutdown_status(running_buckets[key]):
                 if not restart_master(running_buckets[key]):
                     log.warning("Failed to restart master (%s). Please investigate by hand." % running_buckets[key]['hostname'])
-                # Either way, we remove this master so we can proceed.
+                # Either way, we re-enable and remove this master so we can proceed.
+                if enable_master(running_buckets[key]):
+                    log.info("Re-enabled %s in slavealloc" % running_buckets[key]['hostname'])
                 if key not in completed_masters:
                     completed_masters[key] = []
                 completed_masters[key].append(running_buckets[key].copy())
