@@ -105,14 +105,14 @@
                 <span id="build_win64" class="build_queue">N/A</span>
             </li>
             <li>
-                <label><input type="checkbox" name="platform" value="android-api-9" data-project="android">android api 9 constrained</label>
+                <label><input type="checkbox" name="platform" value="android-api-9" data-project="android">android api 9-10 constrained</label>
                 <span id="test_android-api-9" class="test_queue">N/A</span>
                 <span id="build_android-api-9" class="build_queue">N/A</span>
             </li>
             <li>
-                <label><input type="checkbox" name="platform" value="android-api-10" data-project="android">android api 10+</label>
-                <span id="test_android-api-10" class="test_queue">N/A</span>
-                <span id="build_android-api-10" class="build_queue">N/A</span>
+                <label><input type="checkbox" name="platform" value="android-api-11" data-project="android">android api 11+</label>
+                <span id="test_android-api-11" class="test_queue">N/A</span>
+                <span id="build_android-api-11" class="build_queue">N/A</span>
             </li>
             <li>
                 <label><input type="checkbox" name="platform" value="android-x86" data-project="android">android-x86 (Android 4.2)</label>
@@ -183,15 +183,15 @@
             </li>
 
             <li>
-              <label><input type="checkbox" value="Windows XP">WinXP</label>
+              <label><input type="checkbox" value="Windows XP">WinXP (win32)</label>
             </li>
 
             <li>
-              <label><input type="checkbox" value="Windows 7">Win7</label>
+              <label><input type="checkbox" value="Windows 7">Win7 (win32)</label>
             </li>
 
             <li>
-              <label><input type="checkbox" value="6.2">Win8</label>
+              <label><input type="checkbox" value="Windows 8">Win8 (win64)</label>
             </li>
 
             <li>
@@ -221,10 +221,10 @@
             <label><input type="checkbox" class="group-selector none-selector" CHECKED>None</label>
             <ul>
                 <li><label><input type="checkbox" value="reftest">reftest</label></li>
-                <li><label><input type="checkbox" value="reftest-ipc">reftest-ipc <span class="info">(linux opt only)</span></label></li>
+                <li><label><input type="checkbox" value="reftest-e10s">reftest-e10s <span class="info">(linux opt only)</span></label></li>
                 <li><label><input type="checkbox" value="reftest-no-accel">reftest-no-accel <span class="info">(linux/win7 only)</span></label></li>
                 <li><label><input type="checkbox" value="crashtest">crashtest</label></li>
-                <li><label><input type="checkbox" value="crashtest-ipc">crashtest-ipc <span class="info">(linux opt only)</span></label></li>
+                <li><label><input type="checkbox" value="crashtest-e10s">crashtest-e10s <span class="info">(linux opt only)</span></label></li>
                 <li><label><input type="checkbox" value="xpcshell">xpcshell</label></li>
                 <li><label><input type="checkbox" value="jsreftest">jsreftest</label></li>
                 <li><label><input type="checkbox" value="jetpack">jetpack</label></li>
@@ -242,10 +242,10 @@
                     <li><label><input type="checkbox" value="mochitest-3">mochitest-3</label></li>
                     <li><label><input type="checkbox" value="mochitest-4">mochitest-4</label></li>
                     <li><label><input type="checkbox" value="mochitest-5">mochitest-5</label></li>
+                    <li><label><input type="checkbox" value="mochitest-gl">mochitest-gl</label></li>
                     <li><label><input type="checkbox" value="mochitest-bc">mochitest-bc</label></li>
                     <li><label><input type="checkbox" value="mochitest-dt">mochitest-dt</label></li>
                     <li><label><input type="checkbox" value="mochitest-o">mochitest-o</label></li>
-                    <li><label><input type="checkbox" value="mochitest-metro-chrome">mochitest-metro-chrome <span class="info">(win8 only)</span></label></li>
                     <li><label><input type="checkbox" value="mochitest-e10s-1">mochitest-e10s-1</label></li>
                     <li><label><input type="checkbox" value="mochitest-e10s-2">mochitest-e10s-2</label></li>
                     <li><label><input type="checkbox" value="mochitest-e10s-3">mochitest-e10s-3</label></li>
@@ -254,6 +254,7 @@
                     <li><label><input type="checkbox" value="mochitest-e10s-browser-chrome-1">mochitest-e10s-browser-chrome-1</label></li>
                     <li><label><input type="checkbox" value="mochitest-e10s-browser-chrome-2">mochitest-e10s-browser-chrome-2</label></li>
                     <li><label><input type="checkbox" value="mochitest-e10s-browser-chrome-3">mochitest-e10s-browser-chrome-3</label></li>
+                    <li><label><input type="checkbox" value="mochitest-e10s-devtools-chrome">mochitest-e10s-devtools-chrome</label></li>
                     </ul>
                 </div>
                 <div class='option-subgroup'>
@@ -303,6 +304,10 @@
             <li><label><input type="checkbox" value="mochitest-10">mochitest-10</label></li>
             <li><label><input type="checkbox" value="mochitest-11">mochitest-11</label></li>
             <li><label><input type="checkbox" value="mochitest-12">mochitest-12</label></li>
+            <li><label><input type="checkbox" value="mochitest-13">mochitest-13</label></li>
+            <li><label><input type="checkbox" value="mochitest-14">mochitest-14</label></li>
+            <li><label><input type="checkbox" value="mochitest-15">mochitest-15</label></li>
+            <li><label><input type="checkbox" value="mochitest-16">mochitest-16</label></li>
             <li><label><input type="checkbox" value="mochitest-gl">mochitest-gl</label></li>
             <li><label><input type="checkbox" value="robocop-1">robocop-1</label></li>
             <li><label><input type="checkbox" value="robocop-2">robocop-2</label></li>
@@ -360,7 +365,6 @@
             <ul>
                 <li><label><input type="checkbox" name="talos_suite" value="chromez">chromez</label></li>
                 <li><label><input type="checkbox" name="talos_suite" value="dromaeojs">dromaeojs</label></li>
-                <li><label><input type="checkbox" name="talos_suite" value="other">other (<=version 32)</label></li>
                 <li><label><input type="checkbox" name="talos_suite" value="other_nol64">other (no linux 64)</label></li>
                 <li><label><input type="checkbox" name="talos_suite" value="other_l64">other (linux 64 - includes mediatests)</label></li>
                 <li><label><input type="checkbox" name="talos_suite" value="g1">g1</label></li>

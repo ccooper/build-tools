@@ -27,7 +27,6 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
-      "android-api-10",
       "android"
     ],
     "limit_tb_platforms": [
@@ -77,7 +76,6 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
-      "android-api-10",
       "android"
     ],
     "limit_tb_platforms": [
@@ -127,7 +125,6 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
-      "android-api-10",
       "android"
     ],
     "limit_tb_platforms": [
@@ -177,7 +174,6 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
-      "android-api-10",
       "android"
     ],
     "limit_tb_platforms": [
@@ -227,7 +223,6 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
-      "android-api-10",
       "android"
     ],
     "limit_tb_platforms": [
@@ -277,7 +272,6 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
-      "android-api-10",
       "android"
     ],
     "limit_tb_platforms": [
@@ -335,7 +329,6 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-api-10",
       "android-armv6"
     ],
     "limit_tb_platforms": [
@@ -409,7 +402,6 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-api-10",
       "android-armv6"
     ],
     "limit_tb_platforms": [
@@ -483,7 +475,6 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-api-10",
       "android-armv6"
     ],
     "limit_tb_platforms": [
@@ -557,7 +548,6 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-api-10",
       "android-armv6"
     ],
     "limit_tb_platforms": [
@@ -631,7 +621,6 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-api-10",
       "android-armv6"
     ],
     "limit_tb_platforms": [
@@ -705,7 +694,6 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-api-10",
       "android-armv6"
     ],
     "limit_tb_platforms": [
@@ -798,7 +786,7 @@
     "name": "bm70-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-release-34.1", "mozilla-beta", "mozilla-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
     "ssh_port": 7001,
@@ -826,7 +814,7 @@
     "name": "bm71-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-release-34.1", "mozilla-beta", "mozilla-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
     "ssh_port": 7001,
@@ -854,7 +842,7 @@
     "name": "bm72-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-release-34.1", "mozilla-beta", "mozilla-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
     "ssh_port": 7001,
@@ -882,7 +870,7 @@
     "name": "bm73-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-release-34.1", "mozilla-beta", "mozilla-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
     "ssh_port": 7001,
@@ -910,7 +898,7 @@
     "name": "bm74-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-release-34.1", "mozilla-beta", "mozilla-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
     "ssh_port": 7001,
@@ -988,7 +976,7 @@
     "name": "bm77-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-release-34.1", "mozilla-beta", "mozilla-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
     "ssh_port": 7001,
@@ -1066,7 +1054,7 @@
     "pb_port": 9301,
     "role": "scheduler",
     "ssh_port": 7301,
-    "release_branches": ["mozilla-release", "mozilla-release-34.1", "mozilla-beta", "mozilla-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
     "tools_branch": "default",
@@ -1117,7 +1105,7 @@
     "name": "bm82-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-release-34.1", "mozilla-beta", "mozilla-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
     "ssh_port": 7001,
@@ -1170,7 +1158,7 @@
     "name": "bm84-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-release-34.1", "mozilla-beta", "mozilla-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
     "ssh_port": 7001,
@@ -1198,7 +1186,7 @@
     "name": "bm85-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-release-34.1", "mozilla-beta", "mozilla-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
     "ssh_port": 7001,
@@ -1226,7 +1214,7 @@
     "name": "bm86-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-release-34.1", "mozilla-beta", "mozilla-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
     "ssh_port": 7001,
@@ -1277,7 +1265,7 @@
     "http_port": 8201,
     "limit_fx_platforms": [],
     "limit_mobile_platforms": [
-        "android-api-10",
+        "android-api-11",
         "android"
     ],
     "limit_tb_platforms": [],
@@ -1311,7 +1299,7 @@
     "name": "bm91-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-release-34.1", "mozilla-beta", "mozilla-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
     "ssh_port": 7001,
@@ -1339,7 +1327,7 @@
     "name": "bm94-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-release-34.1", "mozilla-beta", "mozilla-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
     "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
     "ssh_port": 7001,
@@ -1365,7 +1353,7 @@
     "http_port": 8201,
     "limit_fx_platforms": [],
     "limit_mobile_platforms": [
-        "android-api-10",
+        "android-api-11",
         "android"
     ],
     "limit_tb_platforms": [],
@@ -1397,7 +1385,7 @@
     "http_port": 8201,
     "limit_fx_platforms": [],
     "limit_mobile_platforms": [
-        "android-api-10",
+        "android-api-11",
         "android"
     ],
     "limit_tb_platforms": [],
@@ -1429,7 +1417,7 @@
     "http_port": 8201,
     "limit_fx_platforms": [],
     "limit_mobile_platforms": [
-        "android-api-10",
+        "android-api-11",
         "android"
     ],
     "limit_tb_platforms": [],
@@ -1474,7 +1462,6 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
-      "android-api-10",
       "android",
       "android-armv6"
     ],
@@ -1530,7 +1517,6 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
-      "android-api-10",
       "android",
       "android-armv6"
     ],
@@ -1586,7 +1572,6 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
-      "android-api-10",
       "android",
       "android-armv6"
     ],
@@ -1887,7 +1872,6 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-api-10",
       "android-armv6"
     ],
     "limit_tb_platforms": [
@@ -1961,7 +1945,6 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-api-10",
       "android-armv6"
     ],
     "limit_tb_platforms": [
@@ -2035,7 +2018,6 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-api-10",
       "android-armv6"
     ],
     "limit_tb_platforms": [
@@ -2109,7 +2091,6 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-api-10",
       "android-armv6"
     ],
     "limit_tb_platforms": [
@@ -2183,7 +2164,6 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-api-10",
       "android-armv6"
     ],
     "limit_tb_platforms": [
@@ -2257,7 +2237,6 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-api-10",
       "android-armv6"
     ],
     "limit_tb_platforms": [
