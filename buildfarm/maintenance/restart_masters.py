@@ -31,7 +31,7 @@ from slaveapi.clients import ssh
 import logging
 from logging.handlers import RotatingFileHandler
 log = logging.getLogger(__name__)
-handler = RotatingFileHandler("restart_buckets.log",
+handler = RotatingFileHandler("restart_masters.log",
                               maxBytes=52428800,
                               backupCount=10)
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
@@ -300,8 +300,9 @@ if __name__ == '__main__':
                 if not restart_master(running_buckets[key]):
                     log.warning("Failed to restart master (%s). Please investigate by hand." % running_buckets[key]['hostname'])
                 # Either way, we re-enable and remove this master so we can proceed.
-                if enable_master(running_buckets[key]):
-                    log.info("Re-enabled %s in slavealloc" % running_buckets[key]['hostname'])
+                if running_buckets[key]['role'] != "scheduler":
+                    if enable_master(running_buckets[key]):
+                        log.info("Re-enabled %s in slavealloc" % running_buckets[key]['hostname'])
                 if key not in completed_masters:
                     completed_masters[key] = []
                 completed_masters[key].append(running_buckets[key].copy())
