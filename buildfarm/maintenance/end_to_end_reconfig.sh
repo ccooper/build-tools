@@ -128,6 +128,58 @@ function hg_wrapper {
     return "${HG_RETURN_CODE}"
 }
 
+function update_irc {
+# I use ii here as a quick-and-dirty command-line interface to irc.
+# You could quite easily replace this with a call out to an existing
+# bot or external script.
+    MSG=$1
+    if [ "${MSG}" == "" ]; then
+        return 1
+    fi
+
+    II=`which ii`
+    if [ "${II}" == "" ]; then
+	echo "  * IRC client not found. Skipping IRC update."
+        return 1
+    fi
+
+    IRCSERVER='irc.mozilla.org'
+    IRCNICK='reconfig-bot'
+    IRCCHANNEL='#releng'
+    ${II} -s ${IRCSERVER} -n ${IRCNICK} -f "Reconfig Bot" &
+    iipid="$!"
+    sleep 5
+    printf "/j %s\n" "${IRCCHANNEL}" > ~/irc/${IRCSERVER}/in
+    while [ ! -d ~/irc/${IRCSERVER}/${IRCCHANNEL} ]; do
+        echo "  * ~/irc/${IRCSERVER}/${IRCCHANNEL} doesn't exist. Waiting."
+        sleep 5
+    done
+    echo "  * Updating IRC with: ${MSG}"
+    echo "${MSG}" > ~/irc/${IRCSERVER}/${IRCCHANNEL}/in
+    sleep 5
+    kill ${iipid}
+}
+
+function show_time () {
+    num=$1
+    min=0
+    hour=0
+    day=0
+    if ((num>59)); then
+        ((sec=num%60))
+        ((num=num/60))
+        if ((num>59)); then
+            ((min=num%60))
+            ((hour=num/60))
+        else
+            ((min=num))
+        fi
+    else
+	((sec=num))
+    fi
+    echo "$hour"h "$min"m "$sec"s
+}
+
 set +u
 command_called "${@}" | sed '1s/^/  * /;2s/^/    /'
 set -u
@@ -372,6 +424,7 @@ fi
 
 ### If we get this far, all our preflight checks have passed, so now on to business...
 echo "  * All preflight checks passed in '$(basename "${0}")'"
+update_irc "Reconfig has started"
 
 # Merges mozharness, buildbot-configs from default -> production.
 # Merges buildbostcustom from default -> production-0.8.
@@ -478,6 +531,10 @@ if [ -f "${RECONFIG_DIR}/${RECONFIG_UPDATE_FILE}" ]; then
             do
                 mv "${file}" "$(echo "${file}" | sed "s/\\.txt\$/_${START_TIME}&/")"
             done 2>/dev/null || true
+            RECONFIG_STOP_TIME="$(date +%s)"
+            RECONFIG_ELAPSED=$((RECONFIG_STOP_TIME - START_TIME))
+            RECONFIG_ELAPSED_DISPLAY=`show_time ${RECONFIG_ELAPSED}`
+            update_irc "Reconfig has finished in ${RECONFIG_ELAPSED_DISPLAY}. See http://bit.ly/reconfigs for details."
         fi
     fi
 
@@ -505,5 +562,7 @@ fi
 echo "  * Directory '${RECONFIG_DIR}' contains artefacts from reconfig process"
 
 STOP_TIME="$(date +%s)"
+ELAPSED_TIME=$((STOP_TIME - START_TIME))
+ELAPSED_DISPLAY=`show_time ${ELAPSED_TIME}`
 echo "  * Finish timestamp: ${STOP_TIME}"
-echo "  * Time taken: $((STOP_TIME - START_TIME))s"
+echo "  * Time taken: ${ELAPSED_DISPLAY}"
