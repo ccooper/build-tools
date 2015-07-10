@@ -55,8 +55,11 @@ def findOldBuildIDs(product, version, buildNumber, platforms,
     return ids
 
 
-def getReleaseConfigName(product, branch, version=None, staging=False):
-    cfg = 'release-%s-%s.py' % (product, branch)
+def getReleaseConfigName(product, branch, version, staging=False):
+    if product in ("firefox", "fennec") and branch == "mozilla-release" and "b" in version:
+        cfg = "release-%s-mozilla-beta.py" % product
+    else:
+        cfg = 'release-%s-%s.py' % (product, branch)
     if staging:
         cfg = 'staging_%s' % cfg
     return cfg
@@ -179,7 +182,7 @@ def fileInfo(filepath, product):
         ret = {'pathstyle': 'long'}
         if filepath.endswith('.mar'):
             ret['format'] = 'mar'
-            m = re.search(r"update/(win32|linux-i686|linux-x86_64|mac|mac64)/([-a-zA-Z]+)/(%s)-(?:(\d+\.\d+(?:\.\d+)?(?:\w+(?:\d+)?)?)-)?(\d+\.\d+(?:\.\d+)?(?:\w+(?:\d+)?)?)\.(complete|partial)\.mar" % product, filepath)
+            m = re.search(r"update/(win32|win64|linux-i686|linux-x86_64|mac|mac64)/([-a-zA-Z]+)/(%s)-(?:(\d+\.\d+(?:\.\d+)?(?:\w+(?:\d+)?)?)-)?(\d+\.\d+(?:\.\d+)?(?:\w+(?:\d+)?)?)\.(complete|partial)\.mar" % product, filepath)
             if not m:
                 raise ValueError("Could not parse: %s" % filepath)
             ret['platform'] = m.group(1)
@@ -192,26 +195,14 @@ def fileInfo(filepath, product):
         elif filepath.endswith('.exe'):
             ret['format'] = 'exe'
             ret['contents'] = 'installer'
-            # EUballot builds use a different enough style of path than others
-            # that we can't catch them in the same regexp
-            if filepath.find('win32-EUballot') != -1:
-                ret['platform'] = 'win32'
-                m = re.search(r"(win32-EUballot/)([-a-zA-Z]+)/((?i)%s) Setup (\d+\.\d+(?:\.\d+)?(?:\w+\d+)?(?:\ \w+\ \d+)?)\.exe" % product, filepath)
-                if not m:
-                    raise ValueError("Could not parse: %s" % filepath)
-                ret['leading_path'] = m.group(1)
-                ret['locale'] = m.group(2)
-                ret['product'] = m.group(3).lower()
-                ret['version'] = m.group(4)
-            else:
-                m = re.search(r"(partner-repacks/[-a-zA-Z0-9_]+/|)(win32|mac|linux-i686)/([-a-zA-Z]+)/((?i)%s) Setup (\d+\.\d+(?:\.\d+)?(?:\w+(?:\d+)?)?(?:\ \w+\ \d+)?)\.exe" % product, filepath)
-                if not m:
-                    raise ValueError("Could not parse: %s" % filepath)
-                ret['leading_path'] = m.group(1)
-                ret['platform'] = m.group(2)
-                ret['locale'] = m.group(3)
-                ret['product'] = m.group(4).lower()
-                ret['version'] = m.group(5)
+            m = re.search(r"(partner-repacks/[-a-zA-Z0-9_]+/|)(win32|win64|mac|linux-i686)/([-a-zA-Z]+)/((?i)%s) Setup (\d+\.\d+(?:\.\d+)?(?:\w+(?:\d+)?)?(?:\ \w+\ \d+)?)\.exe" % product, filepath)
+            if not m:
+                raise ValueError("Could not parse: %s" % filepath)
+            ret['leading_path'] = m.group(1)
+            ret['platform'] = m.group(2)
+            ret['locale'] = m.group(3)
+            ret['product'] = m.group(4).lower()
+            ret['version'] = m.group(5)
         else:
             raise ValueError("Unknown filetype for %s" % filepath)
 

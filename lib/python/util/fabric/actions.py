@@ -14,6 +14,8 @@ from util.retry import retry
 OK = green('[OK]')
 FAIL = red('[FAIL]')
 
+RECONFIG_LOCKFILE = 'reconfig.lock'
+
 BUILDBOT_WRANGLER = os.path.normpath(os.path.join(
     os.path.dirname(__file__),
     "../../../../buildfarm/maintenance/buildbot-wrangler.py"))
@@ -126,12 +128,21 @@ def show_revisions_header():
 def action_reconfig(master):
     """Performs a reconfig (only - no update or checkconfig)"""
     print "starting reconfig of %(hostname)s:%(basedir)s" % master
+    with hide('stdout', 'stderr', 'running'):
+        lockfile_check = run('if [ -e %s ]; then echo "lockfile found"; fi' % RECONFIG_LOCKFILE, workdir=master['basedir'])
+        if lockfile_check != "":
+            print FAIL, "lockfile (%s) found in %s:%s" % (RECONFIG_LOCKFILE,
+                                                          master['hostname'],
+                                                          master['basedir'])
+            raise Exception("Couldn't get lockfile to reconfig")
     with show('running'):
+        action_create_reconfig_lockfile(master, notify=False)
         put(BUILDBOT_WRANGLER,
             '%s/buildbot-wrangler.py' % master['basedir'])
         run('rm -f *.pyc', workdir=master['basedir'])
         run('python buildbot-wrangler.py reconfig %s' %
             master['master_dir'], workdir=master['basedir'])
+        action_remove_reconfig_lockfile(master, notify=False)
     print OK, "finished reconfig of %(hostname)s:%(basedir)s" % master
 
 
@@ -203,10 +214,12 @@ def action_update_buildbot(master):
             master['buildbot_python'], workdir=buildbot_dir)
     print OK, "updated buildbot in %(hostname)s:%(basedir)s" % master
 
+
 def action_uptime(master):
     with hide('stdout', 'stderr', 'running'):
         uptime = run('uptime')
         print "%-25s %12s" % (master['name'], uptime)
+
 
 def action_fix_makefile_symlink(master):
     with show('running'):
@@ -216,17 +229,17 @@ def action_fix_makefile_symlink(master):
     print OK, "updated Makefile symlink in %(hostname)s:%(basedir)s" % master
 
 
-def action_add_esr31_symlinks(master):
+def action_add_esr38_symlinks(master):
     with show('running'):
-        run('ln -s %(bbconfigs_dir)s/mozilla/release-firefox-mozilla-esr31.py '
+        run('ln -s %(bbconfigs_dir)s/mozilla/release-firefox-mozilla-esr38.py '
             '%(master_dir)s/' % master)
-        run('ln -s %(bbconfigs_dir)s/mozilla/l10n-changesets_mozilla-esr31 '
+        run('ln -s %(bbconfigs_dir)s/mozilla/l10n-changesets_mozilla-esr38 '
             '%(master_dir)s/' % master)
-        run('ln -s %(bbconfigs_dir)s/mozilla/release-thunderbird-comm-esr31.py '
+        run('ln -s %(bbconfigs_dir)s/mozilla/release-thunderbird-comm-esr38.py '
             '%(master_dir)s/' % master)
-        run('ln -s %(bbconfigs_dir)s/mozilla/l10n-changesets_thunderbird-esr31 '
+        run('ln -s %(bbconfigs_dir)s/mozilla/l10n-changesets_thunderbird-esr38 '
             '%(master_dir)s/' % master)
-    print OK, "Added esr31 symlinks in %(hostname)s:%(basedir)s" % master
+    print OK, "Added esr38 symlinks in %(hostname)s:%(basedir)s" % master
 
 
 def action_rm_34_1_symlinks(master):
@@ -244,9 +257,15 @@ def action_add_gecko_version_symlinks(master):
             '%(master_dir)s/' % master)
 
 
+def action_add_config_seta_symlinks(master):
+    with show('running'):
+        run('ln -s %(bbconfigs_dir)s/mozilla-tests/config_seta.py '
+            '%(master_dir)s/' % master)
+
+
 def action_update_exception_timestamp(master):
     with show('running'):
-        run('date +%s > /home/cltbld/.{0}s-last-time.txt'.format(master['name']))
+        run('date +%s > /home/cltbld/.{0}-last-time.txt'.format(master['name']))
 
 
 def per_host(fn):
@@ -277,7 +296,33 @@ def action_retry_dead_queue(host):
                 else:
                     run("mv %s /dev/shm/queue/%s/new" % (f, q))
 
+
 def action_master_health(master):
     with show('running'):
         run('ls -l %(master_dir)s/*.pid' % master)
         run('free -m')
+
+
+def action_create_reconfig_lockfile(master, notify=True):
+    with hide('stdout', 'stderr', 'running'):
+        run('touch %s' % RECONFIG_LOCKFILE, workdir=master['basedir'])
+    if notify:
+        print OK, "Created %s in %s:%s" % (RECONFIG_LOCKFILE,
+                                           master['hostname'],
+                                           master['basedir'])
+
+
+def action_remove_reconfig_lockfile(master, notify=True):
+    with hide('stdout', 'stderr', 'running'):
+        run('rm -f %s' % RECONFIG_LOCKFILE, workdir=master['basedir'])
+    if notify:
+        print OK, "Removed %s from %s:%s" % (RECONFIG_LOCKFILE,
+                                             master['hostname'],
+                                             master['basedir'])
+
+
+def action_restart_pulse_publisher(master):
+    with show('running'):
+        run('/etc/init.d/pulse_publisher restart')
+    print OK, 'Pulse publisher restarted on %s:%s' % (master['hostname'], master['basedir'])
+

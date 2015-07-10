@@ -41,7 +41,7 @@ class API(object):
     url_template = None
     prerequest_url_template = None
 
-    def __init__(self, api_root='https://aus4-admin-dev.allizom.org',
+    def __init__(self, api_root='https://aus4-admin-dev.allizom.org/api',
                  auth=None, ca_certs=CA_BUNDLE, timeout=60, raise_exceptions=True):
         """ Creates an API object which wraps REST API of Balrog server.
 
@@ -54,8 +54,7 @@ class API(object):
                   If set to string, puthon-requests uses it as a pth to path to
                   CA bundle.
         timeout : request timeout
-        raise_exceptions: Sets danger_mode parameter of python-requests config
-                          which controls excpetion raising.
+        raise_exceptions: controls exception handling of python-requests.
         """
         self.api_root = api_root.rstrip('/')
         self.verify = ca_certs
@@ -63,7 +62,7 @@ class API(object):
             "auth should be set to tuple or None"
         self.auth = auth
         self.timeout = timeout
-        self.config = dict(danger_mode=raise_exceptions)
+        self.raise_exceptions = raise_exceptions
         self.session = requests.session()
         self.csrf_token = None
 
@@ -113,10 +112,12 @@ class API(object):
         headers = {'Accept-Encoding': 'application/json',
                    'Accept': 'application/json'}
         try:
-            return self.session.request(method=method, url=url, data=data,
-                                        config=self.config, timeout=self.timeout,
-                                        verify=self.verify, auth=self.auth,
-                                        headers=headers)
+            req = self.session.request(
+                method=method, url=url, data=data, timeout=self.timeout,
+                verify=self.verify, auth=self.auth, headers=headers)
+            if self.raise_exceptions:
+                req.raise_for_status()
+            return req
         except requests.HTTPError, e:
             logging.error('Caught HTTPError: %s' % e.response.content)
             raise

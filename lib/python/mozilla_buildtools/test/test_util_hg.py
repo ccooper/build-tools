@@ -8,7 +8,7 @@ import util.hg as hg
 from util.hg import clone, pull, update, hg_ver, mercurial, _make_absolute, \
     share, push, apply_and_push, HgUtilError, make_hg_url, get_branch, purge, \
     get_branches, path, init, unbundle, adjust_paths, is_hg_cset, commit, tag, \
-    get_hg_output
+    get_hg_output, has_rev
 from util.file import touch
 from util.commands import run_cmd, get_output
 
@@ -55,6 +55,9 @@ class TestMakeAbsolute(unittest.TestCase):
     def testAbsolutePath(self):
         self.assertEquals(_make_absolute("/foo/bar"), "/foo/bar")
 
+    def testStripTrailingSlash(self):
+        self.assertEquals(_make_absolute("/foo/bar/"), "/foo/bar")
+
     def testRelativePath(self):
         self.assertEquals(
             _make_absolute("foo/bar"), os.path.abspath("foo/bar"))
@@ -99,18 +102,22 @@ class TestIsHgCset(unittest.TestCase):
 
 class TestHg(unittest.TestCase):
     def setUp(self):
-        self.tmpdir = tempfile.mkdtemp()
+        tmpdir = None
+        if os.path.isdir("/dev/shm"):
+            tmpdir = "/dev/shm"
+        self.tmpdir = tempfile.mkdtemp(dir=tmpdir)
+        self.pwd = os.getcwd()
+        os.chdir(self.tmpdir)
         self.repodir = os.path.join(self.tmpdir, 'repo')
+        # Have a stable hgrc to test with
+        os.environ['HGRCPATH'] = os.path.join(os.path.dirname(__file__), "hgrc")
         run_cmd(['%s/init_hgrepo.sh' % os.path.dirname(__file__),
                 self.repodir])
 
         self.revisions = getRevisions(self.repodir)
         self.wc = os.path.join(self.tmpdir, 'wc')
-        self.pwd = os.getcwd()
         self.sleep_patcher = patch('time.sleep')
         self.sleep_patcher.start()
-        # Have a stable hgrc to test with
-        os.environ['HGRCPATH'] = os.path.join(os.path.dirname(__file__), "hgrc")
         hg.RETRY_ATTEMPTS = 2
 
     def tearDown(self):
@@ -247,7 +254,8 @@ class TestHg(unittest.TestCase):
     def testPullUnrelated(self):
         # Create a new repo
         repo2 = os.path.join(self.tmpdir, 'repo2')
-        run_cmd(['%s/init_hgrepo.sh' % os.path.dirname(__file__), repo2])
+        run_cmd(['%s/init_hgrepo.sh' % os.path.dirname(__file__), repo2],
+                env={'extra': 'unrelated'})
 
         self.assertNotEqual(self.revisions, getRevisions(repo2))
 
@@ -261,7 +269,8 @@ class TestHg(unittest.TestCase):
     def testShareUnrelated(self):
         # Create a new repo
         repo2 = os.path.join(self.tmpdir, 'repo2')
-        run_cmd(['%s/init_hgrepo.sh' % os.path.dirname(__file__), repo2])
+        run_cmd(['%s/init_hgrepo.sh' % os.path.dirname(__file__), repo2],
+            env={'extra': 'share_unrelated'})
 
         self.assertNotEqual(self.revisions, getRevisions(repo2))
 
@@ -315,7 +324,8 @@ class TestHg(unittest.TestCase):
 
         # Reset the repo
         run_cmd(
-            ['%s/init_hgrepo.sh' % os.path.dirname(__file__), self.repodir])
+            ['%s/init_hgrepo.sh' % os.path.dirname(__file__), self.repodir],
+            env={'extra': 'extra_files_reset'})
 
         # Make the working repo have a new file. We need it to have an earlier
         # timestamp (yesterday) to trigger the odd behavior in hg
@@ -339,7 +349,8 @@ class TestHg(unittest.TestCase):
 
         # Reset the repo
         run_cmd(
-            ['%s/init_hgrepo.sh' % os.path.dirname(__file__), self.repodir])
+            ['%s/init_hgrepo.sh' % os.path.dirname(__file__), self.repodir],
+            env={'extra': 'share_reset'})
 
         self.assertNotEqual(old_revs, getRevisions(self.repodir))
 
@@ -517,7 +528,8 @@ class TestHg(unittest.TestCase):
 
         try:
             repo2 = os.path.join(self.tmpdir, 'repo2')
-            run_cmd(['%s/init_hgrepo.sh' % os.path.dirname(__file__), repo2])
+            run_cmd(['%s/init_hgrepo.sh' % os.path.dirname(__file__), repo2],
+                    env={'extra': 'change_repo'})
 
             self.assertNotEqual(self.revisions, getRevisions(repo2))
 
@@ -777,7 +789,7 @@ class TestHg(unittest.TestCase):
         # Create an unrelated repo
         repo2 = os.path.join(self.tmpdir, 'repo2')
         run_cmd(['%s/init_hgrepo.sh' % os.path.dirname(__file__),
-                 repo2])
+                 repo2], env={'extra': 'clone_unrelated'})
 
         self.assertNotEqual(self.revisions, getRevisions(repo2))
 
@@ -952,7 +964,8 @@ class TestHg(unittest.TestCase):
 
     def testPullWithUnrelatedMirror(self):
         mirror = os.path.join(self.tmpdir, 'repo2')
-        run_cmd(['%s/init_hgrepo.sh' % os.path.dirname(__file__), mirror])
+        run_cmd(['%s/init_hgrepo.sh' % os.path.dirname(__file__), mirror],
+                env={'extra': 'pull_unrealted'})
 
         # Now clone from the original
         clone(self.repodir, self.wc)
@@ -1042,6 +1055,15 @@ class TestHg(unittest.TestCase):
         # We should only have the one revision
         self.assertEquals(getRevisions(sharerepo), self.revisions[-1:])
         self.assertEquals(getRevisions(self.wc), self.revisions[-1:])
+
+    def testMercurialSkipPull(self):
+        # Clone once into our working copy
+        mercurial(self.repodir, self.wc)
+
+        # The second clone should avoid calling pull()
+        with patch('util.hg.pull') as patched_pull:
+            mercurial(self.repodir, self.wc, revision=self.revisions[-1])
+            self.assertEquals(patched_pull.call_count, 0)
 
     def testAdjustPaths(self):
         mercurial(self.repodir, self.wc)
@@ -1169,3 +1191,7 @@ class TestHg(unittest.TestCase):
             self.assertRaises(subprocess.CalledProcessError,
                               clone, "http://nxdomain.nxnx", self.wc)
             self.assertEquals(num_calls, [2])
+
+    def testHasRev(self):
+        self.assertTrue(has_rev(self.repodir, self.revisions[0]))
+        self.assertFalse(has_rev(self.repodir, self.revisions[0] + 'g'))

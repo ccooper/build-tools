@@ -11,10 +11,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux32/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
-    "db_name": "buildbot-master01.srv.releng.use1.mozilla.com:/builds/buildbot/tests1-linux32/master",
+    "db_name": "buildbot-master01.bb.releng.use1.mozilla.com:/builds/buildbot/tests1-linux32/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master01.srv.releng.use1.mozilla.com",
+    "hostname": "buildbot-master01.bb.releng.use1.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux"
@@ -27,18 +27,15 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
+      "android-api-11",
       "android"
     ],
     "limit_tb_platforms": [
       "linux"
     ],
     "limit_b2g_platforms": [
-      "linux32_gecko"
     ],
     "limit_b2g_slave_platforms": {
-      "linux32_gecko": [
-        "ubuntu32_vm-b2gdt"
-      ]
     },
     "master_dir": "/builds/buildbot/tests1-linux32/master",
     "name": "bm01-tests1-linux32",
@@ -60,10 +57,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux32/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
-    "db_name": "buildbot-master02.srv.releng.use1.mozilla.com:/builds/buildbot/tests1-linux32/master",
+    "db_name": "buildbot-master02.bb.releng.use1.mozilla.com:/builds/buildbot/tests1-linux32/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master02.srv.releng.use1.mozilla.com",
+    "hostname": "buildbot-master02.bb.releng.use1.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux"
@@ -76,18 +73,15 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
+      "android-api-11",
       "android"
     ],
     "limit_tb_platforms": [
       "linux"
     ],
     "limit_b2g_platforms": [
-      "linux32_gecko"
     ],
     "limit_b2g_slave_platforms": {
-      "linux32_gecko": [
-        "ubuntu32_vm-b2gdt"
-      ]
     },
     "master_dir": "/builds/buildbot/tests1-linux32/master",
     "name": "bm02-tests1-linux32",
@@ -109,10 +103,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux32/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
-    "db_name": "buildbot-master03.srv.releng.use1.mozilla.com:/builds/buildbot/tests1-linux32/master",
+    "db_name": "buildbot-master03.bb.releng.use1.mozilla.com:/builds/buildbot/tests1-linux32/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master03.srv.releng.use1.mozilla.com",
+    "hostname": "buildbot-master03.bb.releng.use1.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux"
@@ -125,18 +119,15 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
+      "android-api-11",
       "android"
     ],
     "limit_tb_platforms": [
       "linux"
     ],
     "limit_b2g_platforms": [
-      "linux32_gecko"
     ],
     "limit_b2g_slave_platforms": {
-      "linux32_gecko": [
-        "ubuntu32_vm-b2gdt"
-      ]
     },
     "master_dir": "/builds/buildbot/tests1-linux32/master",
     "name": "bm03-tests1-linux32",
@@ -158,10 +149,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux32/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-west-2",
-    "db_name": "buildbot-master04.srv.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux32/master",
+    "db_name": "buildbot-master04.bb.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux32/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master04.srv.releng.usw2.mozilla.com",
+    "hostname": "buildbot-master04.bb.releng.usw2.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux"
@@ -174,18 +165,15 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
+      "android-api-11",
       "android"
     ],
     "limit_tb_platforms": [
       "linux"
     ],
     "limit_b2g_platforms": [
-      "linux32_gecko"
     ],
     "limit_b2g_slave_platforms": {
-      "linux32_gecko": [
-        "ubuntu32_vm-b2gdt"
-      ]
     },
     "master_dir": "/builds/buildbot/tests1-linux32/master",
     "name": "bm04-tests1-linux32",
@@ -207,10 +195,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux32/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-west-2",
-    "db_name": "buildbot-master05.srv.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux32/master",
+    "db_name": "buildbot-master05.bb.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux32/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master05.srv.releng.usw2.mozilla.com",
+    "hostname": "buildbot-master05.bb.releng.usw2.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux"
@@ -223,18 +211,15 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
+      "android-api-11",
       "android"
     ],
     "limit_tb_platforms": [
       "linux"
     ],
     "limit_b2g_platforms": [
-      "linux32_gecko"
     ],
     "limit_b2g_slave_platforms": {
-      "linux32_gecko": [
-        "ubuntu32_vm-b2gdt"
-      ]
     },
     "master_dir": "/builds/buildbot/tests1-linux32/master",
     "name": "bm05-tests1-linux32",
@@ -256,10 +241,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux32/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-west-2",
-    "db_name": "buildbot-master06.srv.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux32/master",
+    "db_name": "buildbot-master06.bb.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux32/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master06.srv.releng.usw2.mozilla.com",
+    "hostname": "buildbot-master06.bb.releng.usw2.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux"
@@ -272,18 +257,15 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
+      "android-api-11",
       "android"
     ],
     "limit_tb_platforms": [
       "linux"
     ],
     "limit_b2g_platforms": [
-      "linux32_gecko"
     ],
     "limit_b2g_slave_platforms": {
-      "linux32_gecko": [
-        "ubuntu32_vm-b2gdt"
-      ]
     },
     "master_dir": "/builds/buildbot/tests1-linux32/master",
     "name": "bm06-tests1-linux32",
@@ -305,10 +287,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux64/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
-    "db_name": "buildbot-master51.srv.releng.use1.mozilla.com:/builds/buildbot/tests1-linux64/master",
+    "db_name": "buildbot-master51.bb.releng.use1.mozilla.com:/builds/buildbot/tests1-linux64/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master51.srv.releng.use1.mozilla.com",
+    "hostname": "buildbot-master51.bb.releng.use1.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux64",
@@ -329,14 +311,13 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-armv6"
+      "android-api-11"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
       "linux64_gecko",
-      "linux64-mulet",
       "emulator-jb",
       "emulator-kk",
       "emulator"
@@ -344,9 +325,6 @@
     "limit_b2g_slave_platforms": {
       "linux64_gecko": [
         "ubuntu64_vm-b2gdt"
-      ],
-      "linux64-mulet": [
-        "ubuntu64_vm-mulet"
       ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
@@ -378,10 +356,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux64/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
-    "db_name": "buildbot-master52.srv.releng.use1.mozilla.com:/builds/buildbot/tests1-linux64/master",
+    "db_name": "buildbot-master52.bb.releng.use1.mozilla.com:/builds/buildbot/tests1-linux64/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master52.srv.releng.use1.mozilla.com",
+    "hostname": "buildbot-master52.bb.releng.use1.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux64",
@@ -402,22 +380,18 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-armv6"
+      "android-api-11"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
       "linux64_gecko",
-      "linux64-mulet",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64-mulet": [
-        "ubuntu64_vm-mulet"
-      ],
       "linux64_gecko": [
         "ubuntu64_vm-b2gdt"
       ],
@@ -451,10 +425,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux64/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-west-2",
-    "db_name": "buildbot-master53.srv.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux64/master",
+    "db_name": "buildbot-master53.bb.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux64/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master53.srv.releng.usw2.mozilla.com",
+    "hostname": "buildbot-master53.bb.releng.usw2.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux64",
@@ -475,22 +449,18 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-armv6"
+      "android-api-11"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
       "linux64_gecko",
-      "linux64-mulet",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64-mulet": [
-        "ubuntu64_vm-mulet"
-      ],
       "linux64_gecko": [
         "ubuntu64_vm-b2gdt"
       ],
@@ -524,10 +494,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux64/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-west-2",
-    "db_name": "buildbot-master54.srv.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux64/master",
+    "db_name": "buildbot-master54.bb.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux64/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master54.srv.releng.usw2.mozilla.com",
+    "hostname": "buildbot-master54.bb.releng.usw2.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux64",
@@ -548,22 +518,18 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-armv6"
+      "android-api-11"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64-mulet",
       "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64-mulet": [
-        "ubuntu64_vm-mulet"
-      ],
       "linux64_gecko": [
         "ubuntu64_vm-b2gdt"
       ],
@@ -597,10 +563,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux64/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
-    "db_name": "buildbot-master67.srv.releng.use1.mozilla.com:/builds/buildbot/tests1-linux64/master",
+    "db_name": "buildbot-master67.bb.releng.use1.mozilla.com:/builds/buildbot/tests1-linux64/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master67.srv.releng.use1.mozilla.com",
+    "hostname": "buildbot-master67.bb.releng.use1.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux64",
@@ -621,22 +587,18 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-armv6"
+      "android-api-11"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64-mulet",
       "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64-mulet": [
-        "ubuntu64_vm-mulet"
-      ],
       "linux64_gecko": [
         "ubuntu64_vm-b2gdt"
       ],
@@ -670,10 +632,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux64/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-west-2",
-    "db_name": "buildbot-master68.srv.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux64/master",
+    "db_name": "buildbot-master68.bb.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux64/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master68.srv.releng.usw2.mozilla.com",
+    "hostname": "buildbot-master68.bb.releng.usw2.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux64",
@@ -694,22 +656,18 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-armv6"
+      "android-api-11"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64-mulet",
       "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64-mulet": [
-        "ubuntu64_vm-mulet"
-      ],
       "linux64_gecko": [
         "ubuntu64_vm-b2gdt"
       ],
@@ -777,18 +735,18 @@
     "buildbot_setup": "/builds/buildbot/build1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
-    "db_name": "buildbot-master70.srv.releng.use1.mozilla.com:/builds/buildbot/build1/master",
+    "db_name": "buildbot-master70.bb.releng.use1.mozilla.com:/builds/buildbot/build1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master70.srv.releng.use1.mozilla.com",
+    "hostname": "buildbot-master70.bb.releng.use1.mozilla.com",
     "http_port": 8001,
     "master_dir": "/builds/buildbot/build1/master",
     "name": "bm70-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31", "mozilla-esr38"],
+    "mobile_release_branches": ["mozilla-release", "mozilla-beta"],
+    "thunderbird_release_branches": ["comm-beta", "comm-esr31", "comm-esr38"],
     "ssh_port": 7001,
     "tools_branch": "default",
     "tools_dir": "/builds/buildbot/build1/tools"
@@ -805,18 +763,18 @@
     "buildbot_setup": "/builds/buildbot/build1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
-    "db_name": "buildbot-master71.srv.releng.use1.mozilla.com:/builds/buildbot/build1/master",
+    "db_name": "buildbot-master71.bb.releng.use1.mozilla.com:/builds/buildbot/build1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master71.srv.releng.use1.mozilla.com",
+    "hostname": "buildbot-master71.bb.releng.use1.mozilla.com",
     "http_port": 8001,
     "master_dir": "/builds/buildbot/build1/master",
     "name": "bm71-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31", "mozilla-esr38"],
+    "mobile_release_branches": ["mozilla-release", "mozilla-beta"],
+    "thunderbird_release_branches": ["comm-beta", "comm-esr31", "comm-esr38"],
     "ssh_port": 7001,
     "tools_branch": "default",
     "tools_dir": "/builds/buildbot/build1/tools"
@@ -833,18 +791,18 @@
     "buildbot_setup": "/builds/buildbot/build1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-west-2",
-    "db_name": "buildbot-master72.srv.releng.usw2.mozilla.com:/builds/buildbot/build1/master",
+    "db_name": "buildbot-master72.bb.releng.usw2.mozilla.com:/builds/buildbot/build1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master72.srv.releng.usw2.mozilla.com",
+    "hostname": "buildbot-master72.bb.releng.usw2.mozilla.com",
     "http_port": 8001,
     "master_dir": "/builds/buildbot/build1/master",
     "name": "bm72-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31", "mozilla-esr38"],
+    "mobile_release_branches": ["mozilla-release", "mozilla-beta"],
+    "thunderbird_release_branches": ["comm-beta", "comm-esr31", "comm-esr38"],
     "ssh_port": 7001,
     "tools_branch": "default",
     "tools_dir": "/builds/buildbot/build1/tools"
@@ -861,18 +819,18 @@
     "buildbot_setup": "/builds/buildbot/build1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-west-2",
-    "db_name": "buildbot-master73.srv.releng.usw2.mozilla.com:/builds/buildbot/build1/master",
+    "db_name": "buildbot-master73.bb.releng.usw2.mozilla.com:/builds/buildbot/build1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master73.srv.releng.usw2.mozilla.com",
+    "hostname": "buildbot-master73.bb.releng.usw2.mozilla.com",
     "http_port": 8001,
     "master_dir": "/builds/buildbot/build1/master",
     "name": "bm73-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31", "mozilla-esr38"],
+    "mobile_release_branches": ["mozilla-release", "mozilla-beta"],
+    "thunderbird_release_branches": ["comm-beta", "comm-esr31", "comm-esr38"],
     "ssh_port": 7001,
     "tools_branch": "default",
     "tools_dir": "/builds/buildbot/build1/tools"
@@ -889,18 +847,18 @@
     "buildbot_setup": "/builds/buildbot/build1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-west-2",
-    "db_name": "buildbot-master74.srv.releng.usw2.mozilla.com:/builds/buildbot/build1/master",
+    "db_name": "buildbot-master74.bb.releng.usw2.mozilla.com:/builds/buildbot/build1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master74.srv.releng.usw2.mozilla.com",
+    "hostname": "buildbot-master74.bb.releng.usw2.mozilla.com",
     "http_port": 8001,
     "master_dir": "/builds/buildbot/build1/master",
     "name": "bm74-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31", "mozilla-esr38"],
+    "mobile_release_branches": ["mozilla-release", "mozilla-beta"],
+    "thunderbird_release_branches": ["comm-beta", "comm-esr31", "comm-esr38"],
     "ssh_port": 7001,
     "tools_branch": "default",
     "tools_dir": "/builds/buildbot/build1/tools"
@@ -917,10 +875,10 @@
     "buildbot_setup": "/builds/buildbot/try1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
-    "db_name": "buildbot-master75.srv.releng.use1.mozilla.com:/builds/buildbot/try1/master",
+    "db_name": "buildbot-master75.bb.releng.use1.mozilla.com:/builds/buildbot/try1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master75.srv.releng.use1.mozilla.com",
+    "hostname": "buildbot-master75.bb.releng.use1.mozilla.com",
     "http_port": 8101,
     "master_dir": "/builds/buildbot/try1/master",
     "name": "bm75-try1",
@@ -942,10 +900,10 @@
     "buildbot_setup": "/builds/buildbot/try1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
-    "db_name": "buildbot-master76.srv.releng.use1.mozilla.com:/builds/buildbot/try1/master",
+    "db_name": "buildbot-master76.bb.releng.use1.mozilla.com:/builds/buildbot/try1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master76.srv.releng.use1.mozilla.com",
+    "hostname": "buildbot-master76.bb.releng.use1.mozilla.com",
     "http_port": 8101,
     "master_dir": "/builds/buildbot/try1/master",
     "name": "bm76-try1",
@@ -967,18 +925,18 @@
     "buildbot_setup": "/builds/buildbot/build1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
-    "db_name": "buildbot-master77.srv.releng.use1.mozilla.com:/builds/buildbot/build1/master",
+    "db_name": "buildbot-master77.bb.releng.use1.mozilla.com:/builds/buildbot/build1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master77.srv.releng.use1.mozilla.com",
+    "hostname": "buildbot-master77.bb.releng.use1.mozilla.com",
     "http_port": 8001,
     "master_dir": "/builds/buildbot/build1/master",
     "name": "bm77-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31", "mozilla-esr38"],
+    "mobile_release_branches": ["mozilla-release", "mozilla-beta"],
+    "thunderbird_release_branches": ["comm-beta", "comm-esr31", "comm-esr38"],
     "ssh_port": 7001,
     "tools_branch": "default",
     "tools_dir": "/builds/buildbot/build1/tools"
@@ -995,10 +953,10 @@
     "buildbot_setup": "/builds/buildbot/try1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-west-2",
-    "db_name": "buildbot-master78.srv.releng.usw2.mozilla.com:/builds/buildbot/try1/master",
+    "db_name": "buildbot-master78.b.releng.usw2.mozilla.com:/builds/buildbot/try1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master78.srv.releng.usw2.mozilla.com",
+    "hostname": "buildbot-master78.bb.releng.usw2.mozilla.com",
     "http_port": 8101,
     "master_dir": "/builds/buildbot/try1/master",
     "name": "bm78-try1",
@@ -1020,10 +978,10 @@
     "buildbot_setup": "/builds/buildbot/try1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-west-2",
-    "db_name": "buildbot-master79.srv.releng.usw2.mozilla.com:/builds/buildbot/try1/master",
+    "db_name": "buildbot-master79.bb.releng.usw2.mozilla.com:/builds/buildbot/try1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master79.srv.releng.usw2.mozilla.com",
+    "hostname": "buildbot-master79.bb.releng.usw2.mozilla.com",
     "http_port": 8101,
     "master_dir": "/builds/buildbot/try1/master",
     "name": "bm79-try1",
@@ -1045,18 +1003,18 @@
     "buildbot_setup": "/builds/buildbot/build_scheduler/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master81.srv.releng.scl3.mozilla.com:/builds/buildbot/build_scheduler/master",
+    "db_name": "buildbot-master81.bb.releng.scl3.mozilla.com:/builds/buildbot/build_scheduler/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master81.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master81.bb.releng.scl3.mozilla.com",
     "master_dir": "/builds/buildbot/build_scheduler/master",
     "name": "bm81-build_scheduler",
     "pb_port": 9301,
     "role": "scheduler",
     "ssh_port": 7301,
-    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31", "mozilla-esr38"],
+    "mobile_release_branches": ["mozilla-release", "mozilla-beta"],
+    "thunderbird_release_branches": ["comm-beta", "comm-esr31", "comm-esr38"],
     "tools_branch": "default",
     "tools_dir": "/builds/buildbot/build_scheduler/tools"
   },
@@ -1072,10 +1030,10 @@
     "buildbot_setup": "/builds/buildbot/tests_scheduler/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master81.srv.releng.scl3.mozilla.com:/builds/buildbot/tests_scheduler/master",
+    "db_name": "buildbot-master81.bb.releng.scl3.mozilla.com:/builds/buildbot/tests_scheduler/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master81.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master81.bb.releng.scl3.mozilla.com",
     "master_dir": "/builds/buildbot/tests_scheduler/master",
     "name": "bm81-tests_scheduler",
     "pb_port": 9302,
@@ -1096,18 +1054,18 @@
     "buildbot_setup": "/builds/buildbot/build1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master82.srv.releng.scl3.mozilla.com:/builds/buildbot/build1/master",
+    "db_name": "buildbot-master82.bb.releng.scl3.mozilla.com:/builds/buildbot/build1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master82.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master82.bb.releng.scl3.mozilla.com",
     "http_port": 8001,
     "master_dir": "/builds/buildbot/build1/master",
     "name": "bm82-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31", "mozilla-esr38"],
+    "mobile_release_branches": ["mozilla-release", "mozilla-beta"],
+    "thunderbird_release_branches": ["comm-beta", "comm-esr31", "comm-esr38"],
     "ssh_port": 7001,
     "tools_branch": "default",
     "tools_dir": "/builds/buildbot/build1/tools"
@@ -1124,10 +1082,10 @@
     "buildbot_setup": "/builds/buildbot/try1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master83.srv.releng.scl3.mozilla.com:/builds/buildbot/try1/master",
+    "db_name": "buildbot-master83.bb.releng.scl3.mozilla.com:/builds/buildbot/try1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master83.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master83.bb.releng.scl3.mozilla.com",
     "http_port": 8101,
     "master_dir": "/builds/buildbot/try1/master",
     "name": "bm83-try1",
@@ -1149,18 +1107,18 @@
     "buildbot_setup": "/builds/buildbot/build1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master84.srv.releng.scl3.mozilla.com:/builds/buildbot/build1/master",
+    "db_name": "buildbot-master84.bb.releng.scl3.mozilla.com:/builds/buildbot/build1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master84.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master84.bb.releng.scl3.mozilla.com",
     "http_port": 8001,
     "master_dir": "/builds/buildbot/build1/master",
     "name": "bm84-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31", "mozilla-esr38"],
+    "mobile_release_branches": ["mozilla-release", "mozilla-beta"],
+    "thunderbird_release_branches": ["comm-beta", "comm-esr31", "comm-esr38"],
     "ssh_port": 7001,
     "tools_branch": "default",
     "tools_dir": "/builds/buildbot/build1/tools"
@@ -1177,18 +1135,18 @@
     "buildbot_setup": "/builds/buildbot/build1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master85.srv.releng.scl3.mozilla.com:/builds/buildbot/build1/master",
+    "db_name": "buildbot-master85.bb.releng.scl3.mozilla.com:/builds/buildbot/build1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master85.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master85.bb.releng.scl3.mozilla.com",
     "http_port": 8001,
     "master_dir": "/builds/buildbot/build1/master",
     "name": "bm85-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31", "mozilla-esr38"],
+    "mobile_release_branches": ["mozilla-release", "mozilla-beta"],
+    "thunderbird_release_branches": ["comm-beta", "comm-esr31", "comm-esr38"],
     "ssh_port": 7001,
     "tools_branch": "default",
     "tools_dir": "/builds/buildbot/build1/tools"
@@ -1205,18 +1163,18 @@
     "buildbot_setup": "/builds/buildbot/build1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master86.srv.releng.scl3.mozilla.com:/builds/buildbot/build1/master",
+    "db_name": "buildbot-master86.bb.releng.scl3.mozilla.com:/builds/buildbot/build1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master86.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master86.bb.releng.scl3.mozilla.com",
     "http_port": 8001,
     "master_dir": "/builds/buildbot/build1/master",
     "name": "bm86-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31", "mozilla-esr38"],
+    "mobile_release_branches": ["mozilla-release", "mozilla-beta"],
+    "thunderbird_release_branches": ["comm-beta", "comm-esr31", "comm-esr38"],
     "ssh_port": 7001,
     "tools_branch": "default",
     "tools_dir": "/builds/buildbot/build1/tools"
@@ -1233,10 +1191,10 @@
     "buildbot_setup": "/builds/buildbot/try1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master87.srv.releng.scl3.mozilla.com:/builds/buildbot/try1/master",
+    "db_name": "buildbot-master87.bb.releng.scl3.mozilla.com:/builds/buildbot/try1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master87.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master87.bb.releng.scl3.mozilla.com",
     "http_port": 8101,
     "master_dir": "/builds/buildbot/try1/master",
     "name": "bm87-try1",
@@ -1258,10 +1216,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-panda/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master89.srv.releng.scl3.mozilla.com:/builds/buildbot/tests1-panda/master",
+    "db_name": "buildbot-master89.bb.releng.scl3.mozilla.com:/builds/buildbot/tests1-panda/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master89.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master89.bb.releng.scl3.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [],
     "limit_mobile_platforms": [
@@ -1290,18 +1248,18 @@
     "buildbot_setup": "/builds/buildbot/build1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-west-2",
-    "db_name": "buildbot-master91.srv.releng.usw2.mozilla.com:/builds/buildbot/build1/master",
+    "db_name": "buildbot-master91.bb.releng.usw2.mozilla.com:/builds/buildbot/build1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master91.srv.releng.usw2.mozilla.com",
+    "hostname": "buildbot-master91.bb.releng.usw2.mozilla.com",
     "http_port": 8001,
     "master_dir": "/builds/buildbot/build1/master",
     "name": "bm91-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31", "mozilla-esr38"],
+    "mobile_release_branches": ["mozilla-release", "mozilla-beta"],
+    "thunderbird_release_branches": ["comm-beta", "comm-esr31", "comm-esr38"],
     "ssh_port": 7001,
     "tools_branch": "default",
     "tools_dir": "/builds/buildbot/build1/tools"
@@ -1318,18 +1276,18 @@
     "buildbot_setup": "/builds/buildbot/build1/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
-    "db_name": "buildbot-master94.srv.releng.use1.mozilla.com:/builds/buildbot/build1/master",
+    "db_name": "buildbot-master94.bb.releng.use1.mozilla.com:/builds/buildbot/build1/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master94.srv.releng.use1.mozilla.com",
+    "hostname": "buildbot-master94.bb.releng.use1.mozilla.com",
     "http_port": 8001,
     "master_dir": "/builds/buildbot/build1/master",
     "name": "bm94-build1",
     "pb_port": 9001,
     "role": "build",
-    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "mobile_release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31"],
-    "thunderbird_release_branches": ["comm-beta", "comm-esr31"],
+    "release_branches": ["mozilla-release", "mozilla-beta", "mozilla-esr31", "mozilla-esr38"],
+    "mobile_release_branches": ["mozilla-release", "mozilla-beta"],
+    "thunderbird_release_branches": ["comm-beta", "comm-esr31", "comm-esr38"],
     "ssh_port": 7001,
     "tools_branch": "default",
     "tools_dir": "/builds/buildbot/build1/tools"
@@ -1346,10 +1304,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-panda/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master100.srv.releng.scl3.mozilla.com:/builds/buildbot/tests1-panda/master",
+    "db_name": "buildbot-master100.bb.releng.scl3.mozilla.com:/builds/buildbot/tests1-panda/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master100.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master100.bb.releng.scl3.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [],
     "limit_mobile_platforms": [
@@ -1378,10 +1336,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-panda/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master101.srv.releng.scl3.mozilla.com:/builds/buildbot/tests1-panda/master",
+    "db_name": "buildbot-master101.bb.releng.scl3.mozilla.com:/builds/buildbot/tests1-panda/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master101.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master101.bb.releng.scl3.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [],
     "limit_mobile_platforms": [
@@ -1410,10 +1368,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-panda/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master102.srv.releng.scl3.mozilla.com:/builds/buildbot/tests1-panda/master",
+    "db_name": "buildbot-master102.bb.releng.scl3.mozilla.com:/builds/buildbot/tests1-panda/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master102.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master102.bb.releng.scl3.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [],
     "limit_mobile_platforms": [
@@ -1442,10 +1400,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master103.srv.releng.scl3.mozilla.com:/builds/buildbot/tests1-linux/master",
+    "db_name": "buildbot-master103.bb.releng.scl3.mozilla.com:/builds/buildbot/tests1-linux/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master103.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master103.bb.releng.scl3.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux",
@@ -1462,8 +1420,7 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
-      "android",
-      "android-armv6"
+      "android"
     ],
     "limit_tb_platforms": [
       "linux",
@@ -1497,10 +1454,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master104.srv.releng.scl3.mozilla.com:/builds/buildbot/tests1-linux/master",
+    "db_name": "buildbot-master104.bb.releng.scl3.mozilla.com:/builds/buildbot/tests1-linux/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master104.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master104.bb.releng.scl3.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux",
@@ -1517,8 +1474,7 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
-      "android",
-      "android-armv6"
+      "android"
     ],
     "limit_tb_platforms": [
       "linux",
@@ -1552,10 +1508,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master105.srv.releng.scl3.mozilla.com:/builds/buildbot/tests1-linux/master",
+    "db_name": "buildbot-master105.bb.releng.scl3.mozilla.com:/builds/buildbot/tests1-linux/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master105.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master105.bb.releng.scl3.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux",
@@ -1572,8 +1528,7 @@
     "limit_mobile_platforms": [
       "android-x86",
       "android-api-9",
-      "android",
-      "android-armv6"
+      "android"
     ],
     "limit_tb_platforms": [
       "linux",
@@ -1607,10 +1562,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-macosx/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master106.srv.releng.scl3.mozilla.com:/builds/buildbot/tests1-macosx/master",
+    "db_name": "buildbot-master106.bb.releng.scl3.mozilla.com:/builds/buildbot/tests1-macosx/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master106.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master106.bb.releng.scl3.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
         "macosx64"
@@ -1642,10 +1597,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-macosx/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master107.srv.releng.scl3.mozilla.com:/builds/buildbot/tests1-macosx/master",
+    "db_name": "buildbot-master107.bb.releng.scl3.mozilla.com:/builds/buildbot/tests1-macosx/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master107.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master107.bb.releng.scl3.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
         "macosx64"
@@ -1677,10 +1632,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-macosx/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master108.srv.releng.scl3.mozilla.com:/builds/buildbot/tests1-macosx/master",
+    "db_name": "buildbot-master108.bb.releng.scl3.mozilla.com:/builds/buildbot/tests1-macosx/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master108.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master108.bb.releng.scl3.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
         "macosx64"
@@ -1712,10 +1667,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-windows/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master109.srv.releng.scl3.mozilla.com:/builds/buildbot/tests1-windows/master",
+    "db_name": "buildbot-master109.bb.releng.scl3.mozilla.com:/builds/buildbot/tests1-windows/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master109.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master109.bb.releng.scl3.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "win32",
@@ -1746,10 +1701,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-windows/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master110.srv.releng.scl3.mozilla.com:/builds/buildbot/tests1-windows/master",
+    "db_name": "buildbot-master110.bb.releng.scl3.mozilla.com:/builds/buildbot/tests1-windows/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master110.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master110.bb.releng.scl3.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "win32",
@@ -1780,10 +1735,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-windows/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master111.srv.releng.scl3.mozilla.com:/builds/buildbot/tests1-windows/master",
+    "db_name": "buildbot-master111.bb.releng.scl3.mozilla.com:/builds/buildbot/tests1-windows/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master111.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master111.bb.releng.scl3.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "win32",
@@ -1814,10 +1769,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-windows/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "scl3",
-    "db_name": "buildbot-master112.srv.releng.scl3.mozilla.com:/builds/buildbot/tests1-windows/master",
+    "db_name": "buildbot-master112.bb.releng.scl3.mozilla.com:/builds/buildbot/tests1-windows/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master112.srv.releng.scl3.mozilla.com",
+    "hostname": "buildbot-master112.bb.releng.scl3.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "win32",
@@ -1848,10 +1803,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux64/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
-    "db_name": "buildbot-master113.srv.releng.use1.mozilla.com:/builds/buildbot/tests1-linux64/master",
+    "db_name": "buildbot-master113.bb.releng.use1.mozilla.com:/builds/buildbot/tests1-linux64/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master113.srv.releng.use1.mozilla.com",
+    "hostname": "buildbot-master113.bb.releng.use1.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux64",
@@ -1872,22 +1827,18 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-armv6"
+      "android-api-11"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64-mulet",
       "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64-mulet": [
-        "ubuntu64_vm-mulet"
-      ],
       "linux64_gecko": [
         "ubuntu64_vm-b2gdt"
       ],
@@ -1921,10 +1872,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux64/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
-    "db_name": "buildbot-master114.srv.releng.use1.mozilla.com:/builds/buildbot/tests1-linux64/master",
+    "db_name": "buildbot-master114.bb.releng.use1.mozilla.com:/builds/buildbot/tests1-linux64/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master114.srv.releng.use1.mozilla.com",
+    "hostname": "buildbot-master114.bb.releng.use1.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux64",
@@ -1945,22 +1896,18 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-armv6"
+      "android-api-11"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64-mulet",
       "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64-mulet": [
-        "ubuntu64_vm-mulet"
-      ],
       "linux64_gecko": [
         "ubuntu64_vm-b2gdt"
       ],
@@ -1994,10 +1941,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux64/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-west-2",
-    "db_name": "buildbot-master115.srv.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux64/master",
+    "db_name": "buildbot-master115.bb.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux64/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master115.srv.releng.usw2.mozilla.com",
+    "hostname": "buildbot-master115.bb.releng.usw2.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux64",
@@ -2018,22 +1965,18 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-armv6"
+      "android-api-11"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64-mulet",
       "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64-mulet": [
-        "ubuntu64_vm-mulet"
-      ],
       "linux64_gecko": [
         "ubuntu64_vm-b2gdt"
       ],
@@ -2067,10 +2010,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-linux64/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-west-2",
-    "db_name": "buildbot-master116.srv.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux64/master",
+    "db_name": "buildbot-master116.bb.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux64/master",
     "enabled": true,
     "environment": "production",
-    "hostname": "buildbot-master116.srv.releng.usw2.mozilla.com",
+    "hostname": "buildbot-master116.bb.releng.usw2.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "linux64",
@@ -2091,22 +2034,18 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-armv6"
+      "android-api-11"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64-mulet",
       "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64-mulet": [
-        "ubuntu64_vm-mulet"
-      ],
       "linux64_gecko": [
         "ubuntu64_vm-b2gdt"
       ],
@@ -2164,22 +2103,18 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-armv6"
+      "android-api-11"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64-mulet",
       "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64-mulet": [
-        "ubuntu64_vm-mulet"
-      ],
       "linux64_gecko": [
         "ubuntu64_vm-b2gdt"
       ],
@@ -2237,22 +2172,18 @@
     "limit_mobile_platforms": [
       "android",
       "android-api-9",
-      "android-armv6"
+      "android-api-11"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64-mulet",
       "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64-mulet": [
-        "ubuntu64_vm-mulet"
-      ],
       "linux64_gecko": [
         "ubuntu64_vm-b2gdt"
       ],
@@ -2307,5 +2238,281 @@
     "ssh_port": 7201,
     "tools_branch": "default",
     "tools_dir": "/builds/buildbot/tests1-windows/tools"
+  },
+  {
+    "basedir": "/builds/buildbot/tests1-linux64",
+    "bbconfigs_branch": "production",
+    "bbconfigs_dir": "/builds/buildbot/tests1-linux64/buildbot-configs",
+    "bbcustom_branch": "production-0.8",
+    "bbcustom_dir": "/builds/buildbot/tests1-linux64/buildbotcustom",
+    "buildbot_bin": "/builds/buildbot/tests1-linux64/bin/buildbot",
+    "buildbot_branch": "production-0.8",
+    "buildbot_python": "/builds/buildbot/tests1-linux64/bin/python",
+    "buildbot_setup": "/builds/buildbot/tests1-linux64/buildbot/master/setup.py",
+    "buildbot_version": "0.8.2",
+    "datacentre": "aws-us-east-1",
+    "db_name": "buildbot-master120.bb.releng.use1.mozilla.com:/builds/buildbot/tests1-linux64/master",
+    "enabled": true,
+    "environment": "production",
+    "hostname": "buildbot-master120.bb.releng.use1.mozilla.com",
+    "http_port": 8201,
+    "limit_fx_platforms": [
+      "linux64",
+      "linux64-asan",
+      "linux64-cc"
+    ],
+    "limit_fx_slave_platforms": {
+      "linux64": [
+        "ubuntu64_vm"
+      ],
+      "linux64-asan": [
+        "ubuntu64-asan_vm"
+      ],
+      "linux64-cc": [
+        "ubuntu64_vm"
+      ]
+    },
+    "limit_mobile_platforms": [
+      "android",
+      "android-api-9",
+      "android-api-11"
+    ],
+    "limit_tb_platforms": [
+      "linux64"
+    ],
+    "limit_b2g_platforms": [
+      "linux64_gecko",
+      "emulator-jb",
+      "emulator-kk",
+      "emulator"
+    ],
+    "limit_b2g_slave_platforms": {
+      "linux64_gecko": [
+        "ubuntu64_vm-b2gdt"
+      ],
+      "emulator-jb": [
+        "ubuntu64_vm-b2g-emulator-jb"
+      ],
+      "emulator-kk": [
+        "ubuntu64_vm-b2g-emulator-kk"
+      ],
+      "emulator": [
+        "ubuntu64_vm-b2g-emulator"
+      ]
+    },
+    "master_dir": "/builds/buildbot/tests1-linux64/master",
+    "name": "bm120-tests1-linux64",
+    "pb_port": 9201,
+    "role": "tests",
+    "ssh_port": 7201,
+    "tools_branch": "default",
+    "tools_dir": "/builds/buildbot/tests1-linux64/tools"
+  },
+  {
+    "basedir": "/builds/buildbot/tests1-linux64",
+    "bbconfigs_branch": "production",
+    "bbconfigs_dir": "/builds/buildbot/tests1-linux64/buildbot-configs",
+    "bbcustom_branch": "production-0.8",
+    "bbcustom_dir": "/builds/buildbot/tests1-linux64/buildbotcustom",
+    "buildbot_bin": "/builds/buildbot/tests1-linux64/bin/buildbot",
+    "buildbot_branch": "production-0.8",
+    "buildbot_python": "/builds/buildbot/tests1-linux64/bin/python",
+    "buildbot_setup": "/builds/buildbot/tests1-linux64/buildbot/master/setup.py",
+    "buildbot_version": "0.8.2",
+    "datacentre": "aws-us-east-1",
+    "db_name": "buildbot-master121.bb.releng.use1.mozilla.com:/builds/buildbot/tests1-linux64/master",
+    "enabled": true,
+    "environment": "production",
+    "hostname": "buildbot-master121.bb.releng.use1.mozilla.com",
+    "http_port": 8201,
+    "limit_fx_platforms": [
+      "linux64",
+      "linux64-asan",
+      "linux64-cc"
+    ],
+    "limit_fx_slave_platforms": {
+      "linux64": [
+        "ubuntu64_vm"
+      ],
+      "linux64-asan": [
+        "ubuntu64-asan_vm"
+      ],
+      "linux64-cc": [
+        "ubuntu64_vm"
+      ]
+    },
+    "limit_mobile_platforms": [
+      "android",
+      "android-api-9",
+      "android-api-11"
+    ],
+    "limit_tb_platforms": [
+      "linux64"
+    ],
+    "limit_b2g_platforms": [
+      "linux64_gecko",
+      "emulator-jb",
+      "emulator-kk",
+      "emulator"
+    ],
+    "limit_b2g_slave_platforms": {
+      "linux64_gecko": [
+        "ubuntu64_vm-b2gdt"
+      ],
+      "emulator-jb": [
+        "ubuntu64_vm-b2g-emulator-jb"
+      ],
+      "emulator-kk": [
+        "ubuntu64_vm-b2g-emulator-kk"
+      ],
+      "emulator": [
+        "ubuntu64_vm-b2g-emulator"
+      ]
+    },
+    "master_dir": "/builds/buildbot/tests1-linux64/master",
+    "name": "bm121-tests1-linux64",
+    "pb_port": 9201,
+    "role": "tests",
+    "ssh_port": 7201,
+    "tools_branch": "default",
+    "tools_dir": "/builds/buildbot/tests1-linux64/tools"
+  },
+  {
+    "basedir": "/builds/buildbot/tests1-linux64",
+    "bbconfigs_branch": "production",
+    "bbconfigs_dir": "/builds/buildbot/tests1-linux64/buildbot-configs",
+    "bbcustom_branch": "production-0.8",
+    "bbcustom_dir": "/builds/buildbot/tests1-linux64/buildbotcustom",
+    "buildbot_bin": "/builds/buildbot/tests1-linux64/bin/buildbot",
+    "buildbot_branch": "production-0.8",
+    "buildbot_python": "/builds/buildbot/tests1-linux64/bin/python",
+    "buildbot_setup": "/builds/buildbot/tests1-linux64/buildbot/master/setup.py",
+    "buildbot_version": "0.8.2",
+    "datacentre": "aws-us-west-2",
+    "db_name": "buildbot-master122.bb.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux64/master",
+    "enabled": true,
+    "environment": "production",
+    "hostname": "buildbot-master122.bb.releng.usw2.mozilla.com",
+    "http_port": 8201,
+    "limit_fx_platforms": [
+      "linux64",
+      "linux64-asan",
+      "linux64-cc"
+    ],
+    "limit_fx_slave_platforms": {
+      "linux64": [
+        "ubuntu64_vm"
+      ],
+      "linux64-asan": [
+        "ubuntu64-asan_vm"
+      ],
+      "linux64-cc": [
+        "ubuntu64_vm"
+      ]
+    },
+    "limit_mobile_platforms": [
+      "android",
+      "android-api-9",
+      "android-api-11"
+    ],
+    "limit_tb_platforms": [
+      "linux64"
+    ],
+    "limit_b2g_platforms": [
+      "linux64_gecko",
+      "emulator-jb",
+      "emulator-kk",
+      "emulator"
+    ],
+    "limit_b2g_slave_platforms": {
+      "linux64_gecko": [
+        "ubuntu64_vm-b2gdt"
+      ],
+      "emulator-jb": [
+        "ubuntu64_vm-b2g-emulator-jb"
+      ],
+      "emulator-kk": [
+        "ubuntu64_vm-b2g-emulator-kk"
+      ],
+      "emulator": [
+        "ubuntu64_vm-b2g-emulator"
+      ]
+    },
+    "master_dir": "/builds/buildbot/tests1-linux64/master",
+    "name": "bm122-tests1-linux64",
+    "pb_port": 9201,
+    "role": "tests",
+    "ssh_port": 7201,
+    "tools_branch": "default",
+    "tools_dir": "/builds/buildbot/tests1-linux64/tools"
+  },
+  {
+    "basedir": "/builds/buildbot/tests1-linux64",
+    "bbconfigs_branch": "production",
+    "bbconfigs_dir": "/builds/buildbot/tests1-linux64/buildbot-configs",
+    "bbcustom_branch": "production-0.8",
+    "bbcustom_dir": "/builds/buildbot/tests1-linux64/buildbotcustom",
+    "buildbot_bin": "/builds/buildbot/tests1-linux64/bin/buildbot",
+    "buildbot_branch": "production-0.8",
+    "buildbot_python": "/builds/buildbot/tests1-linux64/bin/python",
+    "buildbot_setup": "/builds/buildbot/tests1-linux64/buildbot/master/setup.py",
+    "buildbot_version": "0.8.2",
+    "datacentre": "aws-us-west-2",
+    "db_name": "buildbot-master123.bb.releng.usw2.mozilla.com:/builds/buildbot/tests1-linux64/master",
+    "enabled": true,
+    "environment": "production",
+    "hostname": "buildbot-master123.bb.releng.usw2.mozilla.com",
+    "http_port": 8201,
+    "limit_fx_platforms": [
+      "linux64",
+      "linux64-asan",
+      "linux64-cc"
+    ],
+    "limit_fx_slave_platforms": {
+      "linux64": [
+        "ubuntu64_vm"
+      ],
+      "linux64-asan": [
+        "ubuntu64-asan_vm"
+      ],
+      "linux64-cc": [
+        "ubuntu64_vm"
+      ]
+    },
+    "limit_mobile_platforms": [
+      "android",
+      "android-api-9",
+      "android-api-11"
+    ],
+    "limit_tb_platforms": [
+      "linux64"
+    ],
+    "limit_b2g_platforms": [
+      "linux64_gecko",
+      "emulator-jb",
+      "emulator-kk",
+      "emulator"
+    ],
+    "limit_b2g_slave_platforms": {
+      "linux64_gecko": [
+        "ubuntu64_vm-b2gdt"
+      ],
+      "emulator-jb": [
+        "ubuntu64_vm-b2g-emulator-jb"
+      ],
+      "emulator-kk": [
+        "ubuntu64_vm-b2g-emulator-kk"
+      ],
+      "emulator": [
+        "ubuntu64_vm-b2g-emulator"
+      ]
+    },
+    "master_dir": "/builds/buildbot/tests1-linux64/master",
+    "name": "bm123-tests1-linux64",
+    "pb_port": 9201,
+    "role": "tests",
+    "ssh_port": 7201,
+    "tools_branch": "default",
+    "tools_dir": "/builds/buildbot/tests1-linux64/tools"
   }
 ]

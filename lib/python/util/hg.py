@@ -2,11 +2,12 @@
 import os
 import re
 import subprocess
+import time
 import sys
 from urlparse import urlsplit
 from ConfigParser import RawConfigParser
 
-from util.commands import run_cmd, get_output, remove_path
+from util.commands import run_cmd, get_output, remove_path, TERMINATED_PROCESS_MSG
 from util.retry import retry, retrier
 
 import logging
@@ -16,9 +17,21 @@ log = logging.getLogger(__name__)
 TRANSIENT_HG_ERRORS = (
     'error: Name or service not known',
     'HTTP Error 5',
+    TERMINATED_PROCESS_MSG,
 )
 
+# Error strings that we want to retry on, but with a longer sleep
+TRANSIENT_HG_ERRORS_EXTRA_WAIT = (
+    'HTTP Error 503'
+)
+
+# Multiply wait times by this value for the "extra wait" errors
+RETRY_EXTRA_WAIT_SCALE = 5
+
 RETRY_ATTEMPTS = 3
+RETRY_SLEEPTIME = 15
+RETRY_SLEEPSCALE = 2
+RETRY_JITTER = 10
 
 
 class DefaultShareBase:
@@ -36,7 +49,7 @@ def _make_absolute(repo):
         repo = "file://%s" % os.path.abspath(path)
     elif "://" not in repo:
         repo = os.path.abspath(repo)
-    return repo
+    return repo.rstrip('/')
 
 
 def make_hg_url(hgHost, repoPath, protocol='https', revision=None,
@@ -67,7 +80,7 @@ def get_repo_path(repo):
         return urlsplit(repo).path.lstrip("/")
 
 
-def get_hg_output(cmd, **kwargs):
+def get_hg_output(cmd, timeout=1800, **kwargs):
     """
     Runs hg with the given arguments and sets HGPLAIN in the environment to
     enforce consistent output.
@@ -82,7 +95,7 @@ def get_hg_output(cmd, **kwargs):
     else:
         env = {}
     env['HGPLAIN'] = '1'
-    return get_output(['hg'] + cmd, env=env, **kwargs)
+    return get_output(['hg'] + cmd, timeout=timeout, env=env, **kwargs)
 
 
 def get_revision(path):
@@ -111,6 +124,24 @@ def is_hg_cset(rev):
         return False
 
 
+def has_rev(repo, rev):
+    """Returns True if the repository has the specified revision.
+
+    Arguments:
+        repo (str):     path to repository
+        rev  (str):     revision identifier
+    """
+    log.info("checking to see if %s exists in %s", rev, repo)
+    cmd = ['log', '-r', rev, '--template', '{node}']
+    try:
+        get_hg_output(cmd, cwd=repo, include_stderr=True)
+        log.info("%s exists in %s", rev, repo)
+        return True
+    except subprocess.CalledProcessError:
+        log.info("%s does not exist in %s", rev, repo)
+        return False
+
+
 def hg_ver():
     """Returns the current version of hg, as a tuple of
     (major, minor, build)"""
@@ -127,11 +158,29 @@ def hg_ver():
     return ver
 
 
+def get_hg_ext(ext_name):
+    """Returns the path to an hg extension"""
+    ext_dir = os.path.normpath(os.path.join(
+        os.path.dirname(__file__),
+        "../../..",
+        "hgext",
+    ))
+    return os.path.abspath(os.path.join(ext_dir, ext_name))
+
+
 def purge(dest):
     """Purge the repository of all untracked and ignored files."""
+    cmd = ['hg', '--config', 'extensions.purge=']
+    # Do we have the purgelong extension? If so, turn it on
+    purgelong_ext = get_hg_ext('purgelong.py')
+    if os.path.exists(purgelong_ext):
+        cmd.extend(['--config', 'extensions.purgelong=%s' % purgelong_ext])
+    else:
+        log.debug("couldn't find purgelong at %s", purgelong_ext)
+    cmd.extend(['purge', '-a', '--all', dest])
+
     try:
-        run_cmd(['hg', '--config', 'extensions.purge=', 'purge',
-                 '-a', '--all', dest], cwd=dest)
+        run_cmd(cmd, cwd=dest)
     except subprocess.CalledProcessError, e:
         log.debug('purge failed: %s' % e)
         raise
@@ -160,7 +209,7 @@ def update(dest, branch=None, revision=None):
 
 
 def clone(repo, dest, branch=None, revision=None, update_dest=True,
-          clone_by_rev=False, mirrors=None, bundles=None):
+          clone_by_rev=False, mirrors=None, bundles=None, timeout=1800):
     """Clones hg repo and places it at `dest`, replacing whatever else is
     there.  The working copy will be empty.
 
@@ -180,6 +229,13 @@ def clone(repo, dest, branch=None, revision=None, update_dest=True,
 
     Regardless of how the repository ends up being cloned, the 'default' path
     will point to `repo`.
+
+    If this function runs for more than `timeout` seconds, the hg clone
+    subprocess will be terminated. This features allows to terminate hung clones
+    before buildbot kills the full jobs. When a timeout terminates the process,
+    the exception is caught by `retrier`.
+
+    Default timeout is 1800 seconds
     """
     if os.path.exists(dest):
         remove_path(dest)
@@ -227,7 +283,7 @@ def clone(repo, dest, branch=None, revision=None, update_dest=True,
             return mercurial(repo, dest, branch, revision, autoPurge=True,
                              update_dest=update_dest, clone_by_rev=clone_by_rev)
 
-    cmd = ['clone']
+    cmd = ['clone', '--traceback']
     if not update_dest:
         cmd.append('-U')
 
@@ -242,12 +298,19 @@ def clone(repo, dest, branch=None, revision=None, update_dest=True,
 
     cmd.extend([repo, dest])
     exc = None
-    for _ in retrier(attempts=RETRY_ATTEMPTS):
+    for _ in retrier(attempts=RETRY_ATTEMPTS, sleeptime=RETRY_SLEEPTIME,
+                     sleepscale=RETRY_SLEEPSCALE, jitter=RETRY_JITTER):
         try:
-            get_hg_output(cmd=cmd, include_stderr=True)
+            get_hg_output(cmd=cmd, include_stderr=True, timeout=timeout)
             break
         except subprocess.CalledProcessError, e:
             exc = sys.exc_info()
+
+            if any(s in e.output for s in TRANSIENT_HG_ERRORS_EXTRA_WAIT):
+                sleeptime = _ * RETRY_EXTRA_WAIT_SCALE
+                log.debug("Encountered an HG error which requires extra sleep, sleeping for %.2fs", sleeptime)
+                time.sleep(sleeptime)
+
             if any(s in e.output for s in TRANSIENT_HG_ERRORS):
                 # This is ok, try again!
                 # Make sure the dest is clean
@@ -303,7 +366,7 @@ def pull(repo, dest, update_dest=True, mirrors=None, **kwargs):
 
     # Convert repo to an absolute path if it's a local repository
     repo = _make_absolute(repo)
-    cmd = ['pull']
+    cmd = ['pull', '--traceback']
     # Don't pass -r to "hg pull", except when it's a valid HG revision.
     # Pulling using tag names is dangerous: it uses the local .hgtags, so if
     # the tag has moved on the remote side you won't pull the new revision the
@@ -317,12 +380,19 @@ def pull(repo, dest, update_dest=True, mirrors=None, **kwargs):
 
     cmd.append(repo)
     exc = None
-    for _ in retrier(attempts=RETRY_ATTEMPTS):
+    for _ in retrier(attempts=RETRY_ATTEMPTS, sleeptime=RETRY_SLEEPTIME,
+                     sleepscale=RETRY_SLEEPSCALE, jitter=RETRY_JITTER):
         try:
             get_hg_output(cmd=cmd, cwd=dest, include_stderr=True)
             break
         except subprocess.CalledProcessError, e:
             exc = sys.exc_info()
+
+            if any(s in e.output for s in TRANSIENT_HG_ERRORS_EXTRA_WAIT):
+                sleeptime = _ * RETRY_EXTRA_WAIT_SCALE
+                log.debug("Encountered an HG error which requires extra sleep, sleeping for %.2fs", sleeptime)
+                time.sleep(sleeptime)
+
             if any(s in e.output for s in TRANSIENT_HG_ERRORS):
                 # This is ok, try again!
                 continue
@@ -370,7 +440,7 @@ def out(src, remote, **kwargs):
 
 
 def push(src, remote, push_new_branches=True, force=False, **kwargs):
-    cmd = ['hg', 'push']
+    cmd = ['hg', 'push', '--traceback']
     cmd.extend(common_args(**kwargs))
     if force:
         cmd.append('-f')
@@ -435,7 +505,7 @@ def mercurial(repo, dest, branch=None, revision=None, update_dest=True,
         hgpath = path(dest, "default")
 
         # Make sure that our default path is correct
-        if hgpath != _make_absolute(repo):
+        if not hgpath or _make_absolute(hgpath) != _make_absolute(repo):
             log.info("hg path isn't correct (%s should be %s); clobbering",
                      hgpath, _make_absolute(repo))
             remove_path(dest)
@@ -451,6 +521,11 @@ def mercurial(repo, dest, branch=None, revision=None, update_dest=True,
             try:
                 if autoPurge:
                     purge(dest)
+                if revision is not None and is_hg_cset(revision) and has_rev(dest, revision):
+                    log.info("skipping pull since we already have %s", revision)
+                    if update_dest:
+                        return update(dest, branch=branch, revision=revision)
+                    return revision
                 return pull(repo, dest, update_dest=update_dest, branch=branch,
                             revision=revision,
                             mirrors=mirrors)
@@ -573,8 +648,8 @@ def apply_and_push(localrepo, remote, changer, max_attempts=10,
             if n == max_attempts:
                 log.debug("Tried %d times, giving up" % max_attempts)
                 for r in reversed(new_revs):
-                    run_cmd(['hg', '--config', 'extensions.mq=', 'strip', '-n',
-                             r[REVISION]], cwd=localrepo)
+                    run_cmd(['hg', '--config', 'extensions.mq=', 'strip',
+                             '--no-backup', r[REVISION]], cwd=localrepo)
                 raise HgUtilError("Failed to push")
             pull(remote, localrepo, update_dest=False,
                  ssh_username=ssh_username, ssh_key=ssh_key)
@@ -589,8 +664,8 @@ def apply_and_push(localrepo, remote, changer, max_attempts=10,
                 run_cmd(['hg', 'rebase', '--abort'], cwd=localrepo)
                 update(localrepo, branch=branch)
                 for r in reversed(new_revs):
-                    run_cmd(['hg', '--config', 'extensions.mq=', 'strip', '-n',
-                             r[REVISION]], cwd=localrepo)
+                    run_cmd(['hg', '--config', 'extensions.mq=', 'strip',
+                             '--no-backup', r[REVISION]], cwd=localrepo)
                 changer(localrepo, n + 1)
 
 
@@ -606,7 +681,7 @@ def cleanOutgoingRevs(reponame, remote, username, sshKey):
                          kwargs=dict(src=reponame, remote=remote,
                                      ssh_username=username, ssh_key=sshKey))
     for r in reversed(outgoingRevs):
-        run_cmd(['hg', '--config', 'extensions.mq=', 'strip', '-n',
+        run_cmd(['hg', '--config', 'extensions.mq=', 'strip', '--no-backup',
                  r[REVISION]], cwd=reponame)
 
 
@@ -628,7 +703,8 @@ def unbundle(bundle, dest):
 
     `bundle` can be a local file or remote url."""
     try:
-        get_hg_output(['unbundle', bundle], cwd=dest, include_stderr=True)
+        get_hg_output(['unbundle', '--traceback', bundle], timeout=3600,
+                      cwd=dest, include_stderr=True)
         return True
     except subprocess.CalledProcessError:
         return False

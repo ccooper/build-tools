@@ -1,5 +1,4 @@
 # buildbot -> bouncer platform mapping
-# TODO: make sure 'win64' is correct when Bouncer becomes aware of
 # 64-bit windows
 try:
     import simplejson as json
@@ -7,7 +6,7 @@ except:
     import json
 bouncer_platform_map = {'win32': 'win', 'win64': 'win64', 'macosx': 'osx',
                         'linux': 'linux', 'linux64': 'linux64',
-                        'macosx64': 'osx', 'win32-EUballot': 'win'}
+                        'macosx64': 'osx'}
 # buildbot -> ftp platform mapping
 ftp_platform_map = {'win32': 'win32', 'win64': 'win64', 'macosx': 'mac',
                     'linux': 'linux-i686', 'linux64': 'linux-x86_64',
@@ -17,14 +16,13 @@ ftp_platform_map = {'win32': 'win32', 'win64': 'win64', 'macosx': 'mac',
                     'android-xul': 'android-xul'}
 # buildbot -> shipped-locales platform mapping
 # TODO: make sure 'win64' is correct when shipped-locales becomes aware of it
-sl_platform_map = {'win32': 'win32', 'win64': 'win64', 'macosx': 'osx',
+sl_platform_map = {'win32': 'win32', 'win64': 'win32', 'macosx': 'osx',
                    'linux': 'linux', 'linux64': 'linux', 'macosx64': 'osx'}
 # buildbot -> update platform mapping
 update_platform_map = {
     'android': ['Android_arm-eabi-gcc3'],
     'android-api-9': ['Android_arm-eabi-gcc3'],
     'android-api-11': ['Android_arm-eabi-gcc3'],
-    'android-armv6': ['Android_arm-eabi-gcc3-armv6'],
     'android-x86': ['Android_x86-gcc3'],
     'linux': ['Linux_x86-gcc3'],
     'linux64': ['Linux_x86_64-gcc3'],
@@ -36,8 +34,7 @@ update_platform_map = {
                  'Darwin_x86-gcc3', 'Darwin_x86_64-gcc3'],
     'win32': ['WINNT_x86-msvc'],
     'win64': ['WINNT_x86_64-msvc'],
-    'flame': ['flame'],
-    'flame-kk': ['flame-kk', 'flame'],
+    'flame-kk': ['flame-kk','flame'],
 }
 
 # These FTP -> other mappings are provided so that things interpreting patcher

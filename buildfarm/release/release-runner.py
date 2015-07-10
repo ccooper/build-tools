@@ -19,7 +19,7 @@ import requests
 from kickoff.api import Releases, Release, ReleaseL10n
 from release.config import substituteReleaseConfig
 from release.info import getBaseTag, getTags, readReleaseConfig, \
-    getReleaseConfigName, getReleaseTag
+    getReleaseConfigName, getReleaseTag, isFinalRelease
 from release.versions import getAppVersion
 from release.sanity import check_buildbot, sendchange
 from util.commands import run_cmd
@@ -100,8 +100,8 @@ class ReleaseRunner(object):
 
     def mark_as_completed(self, release, enUSPlatforms):
         log.info('mark as completed %s' % release['name'])
-        self.release_api.update(release['name'], complete=True, 
-                                status='Started', 
+        self.release_api.update(release['name'], complete=True,
+                                status='Started',
                                 enUSPlatforms=json.dumps(enUSPlatforms))
 
     def mark_as_failed(self, release, why):
@@ -138,6 +138,14 @@ def bump_configs(release, cfgFile, l10nContents, workdir,
     subs = release.copy()
     if 'partials' in release:
         subs['partials'] = getPartials(release)
+    # This is true 99% of the time. It's exceedingly rare that we ship a point
+    # release that we first push to the beta channel. If we need to, the
+    # expectation is that this will be ignored by hardcoding True in the
+    # template.
+    if isFinalRelease(release["version"]):
+        subs["betaChannelEnabled"] = True
+    else:
+        subs["betaChannelEnabled"] = False
 
     with open(templateFile) as f:
         template = f.read()
@@ -216,23 +224,31 @@ def sendMailRD(smtpServer, From, cfgFile, r):
 
     for name, source in sources.items():
 
-        # We cannot use the source["revision"] value because it has not been
-        # updated yet. It is done later in the process.
-        # Select the one defined
         if name == "comm":
             # Thunderbird
-            revision = r["commRevision"]
+            revision = source["revision"]
+            path = source["path"]
         else:
-            revision = r["mozillaRevision"]
+            revision = source["revision"]
+            path = source["path"]
 
         # For now, firefox has only one source repo but Thunderbird has two
-        contentMail += name + " commit: https://hg.mozilla.org/" + source['path'] + "/rev/" + revision + "\n"
+        contentMail += name + " commit: https://hg.mozilla.org/" + path + "/rev/" + revision + "\n"
 
     contentMail += "\nCreated by " + r["submitter"] + "\n"
 
     contentMail += "\nStarted by " + r["starter"] + "\n"
 
-    Subject = 'Build of %s' % r["name"]
+    subjectPrefix = ""
+
+    # On r-d, we prefix the subject of the email in order to simplify filtering
+    # We don't do it for thunderbird
+    if "Fennec" in r["name"]:
+        subjectPrefix = "[mobile] "
+    if "Firefox" in r["name"]:
+        subjectPrefix = "[desktop] "
+
+    Subject = subjectPrefix + 'Build of %s' % r["name"]
 
     sendmail(from_=From, to=To, subject=Subject, body=contentMail,
              smtp_server=smtpServer)
@@ -331,13 +347,6 @@ def main(options):
         cleanOutgoingRevs(workdir, push_repo, hg_username,
                           hg_ssh_key)
 
-    # Send email to r-d for a fast notification
-    for release in rr.new_releases:
-        cfgFile = configs_workdir + "/mozilla/" + getReleaseConfigName(
-            release['product'], path.basename(release['branch']),
-            release['version'], staging)
-        sendMailRD(smtp_server, notify_from, cfgFile, release)
-
     # Create symlinks if needed
     if 'symlinks' in config.sections():
         format_dict = dict(buildbot_configs=configs_workdir,
@@ -371,6 +380,10 @@ def main(options):
                          l10nContents=l10nContents, workdir=configs_workdir,
                          hg_username=hg_username,
                          productionBranch=buildbot_configs_branch)
+
+            # Send email to r-d for a fast notification
+            sendMailRD(smtp_server, notify_from, "%s/mozilla/%s" % (configs_workdir, cfgFile), release)
+
             rr.update_status(release, 'Running release sanity')
             rs_args = get_release_sanity_args(configs_workdir, release,
                                               cfgFile, masters_json,
@@ -426,9 +439,9 @@ def main(options):
             rr.update_status(release, 'Running sendchange command')
             staging = config.getboolean('release-runner', 'staging')
             update(configs_workdir, revision='default')
-            cfgFile = path.join(configs_workdir, 
-                                'mozilla', 
-                                getReleaseConfigName(release['product'], 
+            cfgFile = path.join(configs_workdir,
+                                'mozilla',
+                                getReleaseConfigName(release['product'],
                                                      path.basename(release['branch']),
                                                      release['version'], staging))
             enUSPlatforms = readReleaseConfig(cfgFile)['enUSPlatforms']

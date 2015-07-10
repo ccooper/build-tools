@@ -10,6 +10,10 @@ from release.platforms import buildbot2updatePlatforms, buildbot2bouncer, \
 from release.versions import getPrettyVersion
 from balrog.submitter.api import Release, SingleLocale, Rule
 from util.algorithms import recursive_update
+import logging
+
+log = logging.getLogger(__name__)
+
 
 def get_nightly_blob_name(productName, branch, build_type, suffix, dummy=False):
     if dummy:
@@ -163,33 +167,46 @@ class ReleaseCreatorV4(ReleaseCreatorBase):
         return None
 
     def _getFileUrls(self, productName, version, buildNumber, updateChannels,
-                     stagingServer, bouncerServer, partialUpdates):
+                     stagingServer, bouncerServer, partialUpdates,
+                     requiresMirrors=True):
         data = {"fileUrls": {}}
 
-        # TODO: comment about *
+        # "*" is for the default set of fileUrls, which generally points at
+        # bouncer. It's helpful to have this to reduce duplication between
+        # the live channel and the cdntest channel (which eliminates the
+        # possibility that those two channels serve different contents).
         uniqueChannels = ["*"]
         for c in updateChannels:
-            # Channels that aren't localtest all use the same URLs, which are
-            # added in the catch all. To avoid duplication, we simply don't
-            # add them explicitly.
-            if c in ("betatest", "esrtest") or "localtest" in c:
+            # localtest channels are different than the default because they
+            # point directly at FTP rather than Bouncer.
+            if "localtest" in c:
+                uniqueChannels.append(c)
+            # beta and beta-cdntest are special, but only if requiresMirrors is
+            # set to False. This is typically used when generating beta channel
+            # updates as part of RC builds, which get shipped prior to the
+            # release being pushed to mirrors. This is a bit of a hack.
+            if not requiresMirrors and c in ("beta", "beta-cdntest"):
                 uniqueChannels.append(c)
 
         for channel in uniqueChannels:
             data["fileUrls"][channel] = {
                 "completes": {}
             }
-            if channel in ('betatest', 'esrtest') or "localtest" in channel:
+            if "localtest" in channel:
                 dir_ = makeCandidatesDir(productName.lower(), version,
                                          buildNumber, server=stagingServer,
                                          protocol='http')
                 filename = "%s-%s.complete.mar" % (productName.lower(), version)
                 data["fileUrls"][channel]["completes"]["*"] = "%supdate/%%OS_FTP%%/%%LOCALE%%/%s" % (dir_, filename)
             else:
-                if productName.lower() == "fennec":
-                    bouncerProduct = "%s-%s" % (productName.lower(), version)
+                # See comment above about these channels for explanation.
+                if not requiresMirrors and channel in ("beta", "beta-cdntest"):
+                    bouncerProduct = "%s-%sbuild%s-complete" % (productName.lower(), version, buildNumber)
                 else:
-                    bouncerProduct = "%s-%s-complete" % (productName.lower(), version)
+                    if productName.lower() == "fennec":
+                        bouncerProduct = "%s-%s" % (productName.lower(), version)
+                    else:
+                        bouncerProduct = "%s-%s-complete" % (productName.lower(), version)
                 url = 'http://%s/?product=%s&os=%%OS_BOUNCER%%&lang=%%LOCALE%%' % (bouncerServer, bouncerProduct)
                 data["fileUrls"][channel]["completes"]["*"] = url
 
@@ -202,14 +219,18 @@ class ReleaseCreatorV4(ReleaseCreatorBase):
                 from_ = get_release_blob_name(productName, previousVersion,
                                                 previousInfo["buildNumber"],
                                                 self.dummy)
-                if channel in ('betatest', 'esrtest') or "localtest" in channel:
+                if "localtest" in channel:
                     dir_ = makeCandidatesDir(productName.lower(), version,
                                             buildNumber, server=stagingServer,
                                             protocol='http')
                     filename = "%s-%s-%s.partial.mar" % (productName.lower(), previousVersion, version)
                     data["fileUrls"][channel]["partials"][from_] = "%supdate/%%OS_FTP%%/%%LOCALE%%/%s" % (dir_, filename)
                 else:
-                    bouncerProduct = "%s-%s-partial-%s" % (productName.lower(), version, previousVersion)
+                    # See comment above about these channels for explanation.
+                    if not requiresMirrors and channel in ("beta", "beta-cdntest"):
+                        bouncerProduct = "%s-%sbuild%s-partial-%sbuild%s" % (productName.lower(), version, buildNumber, previousVersion, previousInfo["buildNumber"])
+                    else:
+                        bouncerProduct = "%s-%s-partial-%s" % (productName.lower(), version, previousVersion)
                     url = 'http://%s/?product=%s&os=%%OS_BOUNCER%%&lang=%%LOCALE%%' % (bouncerServer, bouncerProduct)
                     data["fileUrls"][channel]["partials"][from_] = url
 
@@ -219,10 +240,21 @@ class ReleaseCreatorV4(ReleaseCreatorBase):
 class NightlySubmitterBase(object):
     build_type = 'nightly'
 
-    def __init__(self, api_root, auth, dummy=False):
+    def __init__(self, api_root, auth, dummy=False, url_replacements=None):
         self.api_root = api_root
         self.auth = auth
         self.dummy = dummy
+        self.url_replacements = url_replacements
+
+    def _replace_canocical_url(self, url):
+        if self.url_replacements:
+            for string_from, string_to in self.url_replacements:
+                if string_from in url:
+                    new_url = url.replace(string_from, string_to)
+                    log.warning("Replacing %s with %s", url, new_url)
+                    return new_url
+
+        return url
 
     def run(self, platform, buildID, productName, branch, appVersion, locale,
             hashFunction, extVersion, schemaVersion, isOSUpdate=None, **updateKwargs):
@@ -244,14 +276,9 @@ class NightlySubmitterBase(object):
 
         data.update(self._get_update_data(productName, branch, **updateKwargs))
 
-        if build_target == 'flame-kk':
-            # Bug 1055305 - a hack so that we can have JB and KK OTA for flame.
-            # They both query with buildTarget of flame, but differ in OS Version,
-            # so we need separate release blobs and rule to do the right thing
-            build_type = 'kitkat-%s' % self.build_type
-        elif platform == 'android-api-9':
+        if platform == 'android-api-9':
             # Bug 1080749 - a hack to support api-9 and api-10+ split builds.
-            # Like 1055305 above, this is a hack to support two builds with same build target that
+            # Like 1055305, this is a hack to support two builds with same build target that
             # require differed't release blobs and rules
             build_type = 'api-9-%s' % self.build_type
         else:
@@ -273,24 +300,27 @@ class NightlySubmitterBase(object):
 
 
 class MultipleUpdatesNightlyMixin(object):
-    def _get_update_data(self, productName, branch, completeInfo,
-                         partialInfo=None):
-        data = {"completes": []}
 
-        for info in completeInfo:
-            if "from_buildid" in info:
-                from_ = get_nightly_blob_name(productName, branch,
-                                              self.build_type,
-                                              info["from_buildid"],
-                                              self.dummy)
-            else:
-                from_ = "*"
-            data["completes"].append({
-                "from": from_,
-                "filesize": info["size"],
-                "hashValue": info["hash"],
-                "fileUrl": info["url"],
-            })
+    def _get_update_data(self, productName, branch, completeInfo=None,
+                         partialInfo=None):
+        data = {}
+
+        if completeInfo:
+            data["completes"] = []
+            for info in completeInfo:
+                if "from_buildid" in info:
+                    from_ = get_nightly_blob_name(productName, branch,
+                                                  self.build_type,
+                                                  info["from_buildid"],
+                                                  self.dummy)
+                else:
+                    from_ = "*"
+                data["completes"].append({
+                    "from": from_,
+                    "filesize": info["size"],
+                    "hashValue": info["hash"],
+                    "fileUrl": self._replace_canocical_url(info["url"]),
+                })
         if partialInfo:
             data["partials"] = []
             for info in partialInfo:
@@ -301,7 +331,7 @@ class MultipleUpdatesNightlyMixin(object):
                                                   self.dummy),
                     "filesize": info["size"],
                     "hashValue": info["hash"],
-                    "fileUrl": info["url"],
+                    "fileUrl": self._replace_canocical_url(info["url"]),
                 })
 
         return data
@@ -354,20 +384,22 @@ class ReleaseSubmitterBase(object):
 
 class MultipleUpdatesReleaseMixin(object):
     def _get_update_data(self, productName, version, build_number,
-                         completeInfo, partialInfo=None):
-        data = {"completes": []}
+                         completeInfo=None, partialInfo=None):
+        data = {}
 
-        for info in completeInfo:
-            if "previousVersion" in info:
-                from_ = get_release_blob_name(productName, version,
-                                              build_number, self.dummy)
-            else:
-                from_ = "*"
-            data["completes"].append({
-                "from": from_,
-                "filesize": info["size"],
-                "hashValue": info["hash"],
-            })
+        if completeInfo:
+            data["completes"] = []
+            for info in completeInfo:
+                if "previousVersion" in info:
+                    from_ = get_release_blob_name(productName, version,
+                                                build_number, self.dummy)
+                else:
+                    from_ = "*"
+                data["completes"].append({
+                    "from": from_,
+                    "filesize": info["size"],
+                    "hashValue": info["hash"],
+                })
         if partialInfo:
             data["partials"] = []
             for info in partialInfo:

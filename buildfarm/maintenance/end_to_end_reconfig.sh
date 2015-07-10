@@ -15,6 +15,14 @@
 #
 #############################################
 
+# Include our shared function library
+if [ -e ../../lib/shell/functions ]; then
+    . ../../lib/shell/functions
+else
+    echo "Shared functions missing: ../../lib/shell/functions" >&2
+    exit 1
+fi
+
 START_TIME="$(date +%s)"
 
 # Explicitly unset any pre-existing environment variables to avoid variable collision
@@ -57,7 +65,8 @@ function usage {
     echo
     echo "EXIT CODES"
     echo "     0        Success"
-    echo "     1        Bad command line options specified"
+    echo "     1        Error loading shared functions"
+    echo "     2        Bad command line options specified"
     echo "    64        Could not create directory to store results (RECONFIG_DIR)"
     echo "    65        Wiki credentials file not found"
     echo "    66        Python 2.7 not found in PATH"
@@ -128,58 +137,6 @@ function hg_wrapper {
     return "${HG_RETURN_CODE}"
 }
 
-function update_irc {
-# I use ii here as a quick-and-dirty command-line interface to irc.
-# You could quite easily replace this with a call out to an existing
-# bot or external script.
-    MSG=$1
-    if [ "${MSG}" == "" ]; then
-        return 1
-    fi
-
-    II=`which ii`
-    if [ "${II}" == "" ]; then
-	echo "  * IRC client not found. Skipping IRC update."
-        return 1
-    fi
-
-    IRCSERVER='irc.mozilla.org'
-    IRCNICK='reconfig-bot'
-    IRCCHANNEL='#releng'
-    ${II} -s ${IRCSERVER} -n ${IRCNICK} -f "Reconfig Bot" &
-    iipid="$!"
-    sleep 5
-    printf "/j %s\n" "${IRCCHANNEL}" > ~/irc/${IRCSERVER}/in
-    while [ ! -d ~/irc/${IRCSERVER}/${IRCCHANNEL} ]; do
-        echo "  * ~/irc/${IRCSERVER}/${IRCCHANNEL} doesn't exist. Waiting."
-        sleep 5
-    done
-    echo "  * Updating IRC with: ${MSG}"
-    echo "${MSG}" > ~/irc/${IRCSERVER}/${IRCCHANNEL}/in
-    sleep 5
-    kill ${iipid}
-}
-
-function show_time () {
-    num=$1
-    min=0
-    hour=0
-    day=0
-    if ((num>59)); then
-        ((sec=num%60))
-        ((num=num/60))
-        if ((num>59)); then
-            ((min=num%60))
-            ((hour=num/60))
-        else
-            ((min=num))
-        fi
-    else
-	((sec=num))
-    fi
-    echo "$hour"h "$min"m "$sec"s
-}
-
 set +u
 command_called "${@}" | sed '1s/^/  * /;2s/^/    /'
 set -u
@@ -208,7 +165,7 @@ while getopts ":bfhmnpr:w:" opt; do
         w)  RECONFIG_CREDENTIALS_FILE="${OPTARG}"
             ;;
         ?)  usage >&2
-            exit 1
+            exit 2
             ;;
     esac
 done
@@ -409,7 +366,7 @@ if [ -f "${RECONFIG_DIR}/pending_changes" ]; then
             1) echo "  * Continuing with stalled reconfig..."
                ;;
             2) echo "  * Cleaning out previous reconfig from '${RECONFIG_DIR}'..."
-               rm -rf "${RECONFIG_DIR}"/{buildbot-configs,buildbotcustom,pending_changes,mozharness,${RECONFIG_UPDATE_FILE}}
+               rm -rf "${RECONFIG_DIR}"/{buildbot-configs,buildbotcustom,mozharness,pending_changes,${RECONFIG_UPDATE_FILE}}
                ;;
             3) echo "  * Aborting reconfig..."
                exit 67
@@ -424,7 +381,11 @@ fi
 
 ### If we get this far, all our preflight checks have passed, so now on to business...
 echo "  * All preflight checks passed in '$(basename "${0}")'"
-update_irc "Reconfig has started"
+
+if [ "${PREPARE_ONLY}" == '0' ]; then
+    # Failing to update IRC is non-fatal.
+    ./update_irc.sh "Reconfig has started" || true
+fi
 
 # Merges mozharness, buildbot-configs from default -> production.
 # Merges buildbostcustom from default -> production-0.8.
@@ -432,6 +393,11 @@ update_irc "Reconfig has started"
 function merge_to_production {
     [ "${MERGE_TO_PRODUCTION}" == 0 ] && return 0
     echo "  * hg log for this session: '${RECONFIG_DIR}/hg-${START_TIME}.log'"
+    # Create an empty merge file to compare against so we don't claim merge success when nothing was merged.
+    {
+        echo "Merging from default"
+        echo
+    } > "${RECONFIG_DIR}/empty_merge"
     for repo in mozharness buildbot-configs buildbotcustom; do
         if [ -d "${RECONFIG_DIR}/${repo}" ]; then
             echo "  * Existing hg clone of ${repo} found: '${RECONFIG_DIR}/${repo}' - pulling for updates..."
@@ -451,7 +417,7 @@ function merge_to_production {
             echo "Merging from default"
             echo
             hg -R "${RECONFIG_DIR}/${repo}" merge -P default
-        } > "${RECONFIG_DIR}/${repo}_preview_changes.txt" 2>/dev/null
+        } >> "${RECONFIG_DIR}/${repo}_preview_changes.txt" 2>/dev/null
         # Merging can fail if there are no changes between default and "${branch}"
         set +e
         hg_wrapper merge default
@@ -464,7 +430,7 @@ function merge_to_production {
             echo "       push to ${branch} branch, and run this script again." >&2
             exit 69
         else
-            echo "  * Merge resulted in change"
+            echo "  * ${repo} merge resulted in change"
         fi
         # Still commit and push, even if no new changes, since a merge conflict might have been resolved
         hg_wrapper commit -l "${RECONFIG_DIR}/${repo}_preview_changes.txt"
@@ -472,15 +438,45 @@ function merge_to_production {
             echo "  * Pushing '${RECONFIG_DIR}/${repo}' ${branch} branch to ssh://hg.mozilla.org/build/${repo}..."
             hg_wrapper push
         fi
-        echo "${repo}" >> "${RECONFIG_DIR}/pending_changes"
+        if ! diff "${RECONFIG_DIR}/empty_merge" "${RECONFIG_DIR}/${repo}_preview_changes.txt" > /dev/null; then
+  	    echo "${repo}" >> "${RECONFIG_DIR}/pending_changes"
+        fi
     done
     [ -f "${RECONFIG_DIR}/pending_changes" ] && return 0 || return 1
 }
 
+# Now we process the commit messages from all the changes we landed. This is handled by the python script
+# process_commit_comments.py. We pass options to this script based on what steps are enabled (e.g. wiki
+# updates, bugzilla updates). Create an array for this, and if it is empty at the end, we know we don't
+# have to do anything (arrays are better than strings since they can contains spaces).
+commit_processing_options=()
+
+if [ "${UPDATE_WIKI}" == '1' ]; then
+    commit_processing_options+=('--wiki-markup-file' "${RECONFIG_DIR}/${RECONFIG_UPDATE_FILE}")
+fi
+if [ "${UPDATE_BUGZILLA}" == '1' ] && [ "${PREPARE_ONLY}" == '0' ]; then
+    commit_processing_options+=('--update-bugzilla')
+fi
+
+# Display the commands in advance in case the reconfig fails part way through.
+if [ "${#commit_processing_options[@]}" -gt 0 ]; then
+    echo "  * Providing post-processing commands in case reconfig aborts."
+    echo -n "  * Will run '$(pwd)/process_commit_comments.py' --logdir '${RECONFIG_DIR}'"
+    for ((i=0; i<${#commit_processing_options[@]}; i+=1)); do
+        echo -n " '${commit_processing_options[${i}]}'"
+    done
+    echo
+    echo "  * Will run: './update_maintenance_wiki.sh -r \"${RECONFIG_DIR}\" -w \"${RECONFIG_DIR}/${RECONFIG_UPDATE_FILE}\"'"
+fi
+
 # Return code of merge_to_production is 0 if merge performed successfully and changes made
-if merge_to_production || [ "${FORCE_RECONFIG}" == '1' ]; then
+if merge_to_production; then
+    echo "  * All changes merged to production."
+fi
+
+if [ "${FORCE_RECONFIG}" == '1' ]; then
     production_masters_url='http://hg.mozilla.org/build/tools/raw-file/tip/buildfarm/maintenance/production-masters.json'
-    if [ "${PREPARE_ONLY}" == '1' ]; then
+    if [ "${PREPARE_ONLY}" != '0' ]; then
         echo "  * Preparing reconfig only; not running: '$(pwd)/manage_masters.py' -f '${production_masters_url}' -j16 -R scheduler -R build -R try -R tests show_revisions update"
         echo "  * Preparing reconfig only; not running: '$(pwd)/manage_masters.py' -f '${production_masters_url}' -j32 -R scheduler -R build -R try -R tests checkconfig reconfig"
         echo "  * Preparing reconfig only; not running: '$(pwd)/manage_masters.py' -f '${production_masters_url}' -j16 -R scheduler -R build -R try -R tests show_revisions"
@@ -499,19 +495,6 @@ if merge_to_production || [ "${FORCE_RECONFIG}" == '1' ]; then
     fi
 fi
 
-# Now we process the commit messages from all the changes we landed. This is handled by the python script
-# process_commit_comments.py. We pass options to this script based on what steps are enabled (e.g. wiki
-# updates, bugzilla updates). Create an array for this, and if it is empty at the end, we know we don't
-# have to do anything (arrays are better than strings since they can contains spaces).
-commit_processing_options=()
-
-if [ "${UPDATE_WIKI}" == '1' ]; then
-    commit_processing_options+=('--wiki-markup-file' "${RECONFIG_DIR}/${RECONFIG_UPDATE_FILE}")
-fi
-if [ "${UPDATE_BUGZILLA}" == '1' ] && [ "${PREPARE_ONLY}" != '1' ]; then
-    commit_processing_options+=('--update-bugzilla')
-fi
-
 if [ "${#commit_processing_options[@]}" -gt 0 ]; then
     echo -n "  * Running '$(pwd)/process_commit_comments.py' --logdir '${RECONFIG_DIR}'"
     for ((i=0; i<${#commit_processing_options[@]}; i+=1)); do echo -n " '${commit_processing_options[${i}]}'"; done
@@ -523,9 +506,11 @@ fi
 
 if [ -f "${RECONFIG_DIR}/${RECONFIG_UPDATE_FILE}" ]; then
     if [ "${UPDATE_WIKI}" == "1" ]; then
-        if [ "${PREPARE_ONLY}" == '1' ]; then
+        if [ "${PREPARE_ONLY}" != '0' ]; then
+            echo "  * Running: './update_maintenance_wiki.sh -d -r \"${RECONFIG_DIR}\" -w \"${RECONFIG_DIR}/${RECONFIG_UPDATE_FILE}\"'"
             ./update_maintenance_wiki.sh -d -r "${RECONFIG_DIR}" -w "${RECONFIG_DIR}/${RECONFIG_UPDATE_FILE}"
         else
+            echo "  * Running: './update_maintenance_wiki.sh -r \"${RECONFIG_DIR}\" -w \"${RECONFIG_DIR}/${RECONFIG_UPDATE_FILE}\"'"
             ./update_maintenance_wiki.sh -r "${RECONFIG_DIR}" -w "${RECONFIG_DIR}/${RECONFIG_UPDATE_FILE}"
             for file in "${RECONFIG_DIR}"/*_preview_changes.txt
             do
@@ -534,7 +519,8 @@ if [ -f "${RECONFIG_DIR}/${RECONFIG_UPDATE_FILE}" ]; then
             RECONFIG_STOP_TIME="$(date +%s)"
             RECONFIG_ELAPSED=$((RECONFIG_STOP_TIME - START_TIME))
             RECONFIG_ELAPSED_DISPLAY=`show_time ${RECONFIG_ELAPSED}`
-            update_irc "Reconfig has finished in ${RECONFIG_ELAPSED_DISPLAY}. See http://bit.ly/reconfigs for details."
+	    # Failing to update IRC is non-fatal.
+            ./update_irc.sh "Reconfig has finished in ${RECONFIG_ELAPSED_DISPLAY}. See http://bit.ly/reconfigs for details." || true
         fi
     fi
 
@@ -547,7 +533,7 @@ fi
 # and we do not tag it - so aside from running show_revision and then checking if every version
 # is already on the latest commit, we should probably just run it regardless.
 devices_json_url='http://hg.mozilla.org/build/tools/raw-file/tip/buildfarm/mobile/devices.json'
-if [ "${PREPARE_ONLY}" == '1' ]; then
+if [ "${PREPARE_ONLY}" != '0' ]; then
     echo "  * Preparing foopy update only; not running: '$(pwd)/manage_foopies.py' -f '${devices_json_url}' -j16 -H all show_revision update"
     echo "  * Preparing foopy update only; not running: '$(pwd)/manage_foopies.py' -f '${devices_json_url}' -j16 -H all show_revision"
 else

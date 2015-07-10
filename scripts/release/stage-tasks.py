@@ -21,7 +21,11 @@ from util.hg import update, make_hg_url, mercurial
 from util.commands import run_remote_cmd
 from util.transfer import scp
 from util.retry import retry
+from util.svn import checkoutSVN, exportJSON, commitSVN, getSVNrev, updateRev
+
 import requests
+
+from release.product_details_update import updateProductDetailFiles
 
 
 DEFAULT_BUILDBOT_CONFIGS_REPO = make_hg_url('hg.mozilla.org',
@@ -247,10 +251,34 @@ def update_bouncer_alias(tuxedoServerUrl, auth, version,
 
     # Wrap the real call to hide credentials from retry's logging
     def do_update_bouncer_alias():
-        requests.post(url, data=data, auth=auth, config={'danger_mode': True},
-                      verify=False)
+        r = requests.post(url, data=data, auth=auth, verify=False)
+        r.raise_for_status()
 
     retry(do_update_bouncer_alias)
+
+
+def updateProductDetails(productName, version, productDetailsRepo, mozillaComRepo, svnSshKey, dryRun=False):
+    """
+    Add a new version to the product details
+    """
+    os.environ["SVN_SSH"] = "ssh -i %s" % svnSshKey
+    cwd = os.getcwd()
+    pdDir = path.join(cwd, "product-details.svn")
+    mcDir = path.join(cwd, "mozilla.com.svn")
+    retry(checkoutSVN, args=(pdDir, productDetailsRepo), attempts=3)
+    retry(checkoutSVN, args=(mcDir, mozillaComRepo), attempts=3)
+    # Update the PHP files
+    updateProductDetailFiles(pdDir, productName, version)
+    # Export to json
+    exportJSON(pdDir)
+    # Commit to svn
+    commitSVN(pdDir, productName, version, dryRun)
+    # Get the svn revision of the p-d repository
+    svnRev = getSVNrev(pdDir)
+    # Update Mozilla.com
+    updateRev(mcDir, svnRev)
+    # commit Mozilla.com
+    commitSVN(pdDir, productName, version, dryRun)
 
 
 if __name__ == '__main__':
@@ -295,6 +323,9 @@ if __name__ == '__main__':
         and productName != 'xulrunner'
     ftpSymlinkName = releaseConfig.get('ftpSymlinkName')
     bouncer_aliases = releaseConfig.get('bouncer_aliases')
+    productDetailsRepo = releaseConfig.get('productDetailsRepo')
+    mozillaComRepo = releaseConfig.get('mozillaComRepo')
+    svnSshKey = releaseConfig.get("svnSshKey")
 
     if 'permissions' in actions:
         checkStagePermissions(stageServer=stageServer,
@@ -377,3 +408,12 @@ if __name__ == '__main__':
                 auth=auth,
                 version=version,
                 bouncer_aliases=bouncer_aliases)
+
+    if 'product-details' in args:
+        updateProductDetails(
+            productName,
+            version,
+            productDetailsRepo,
+            mozillaComRepo,
+            svnSshKey,
+        )
