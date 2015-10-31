@@ -18,6 +18,7 @@
 #  * on each interation, check for masters that have finished, pick a new master
 #    from that same bucket, and begin the restart process for that master
 
+import getpass
 import os
 import requests
 import simplejson as json
@@ -253,7 +254,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     ldap_username = raw_input("Enter LDAP username: ")
-    ldap_password = raw_input("Enter LDAP password: ")
+    ldap_password = getpass.getpass(prompt='Enter LDAP password: ')
 
     # Getting the master IDs allown us to valid the LDAP credentials while also
     # getting a list of master IDS we can use when disabling masters in slavealloc.
