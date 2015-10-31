@@ -14,11 +14,13 @@
 import logging
 import os
 import random
+import ssl
 import subprocess
 import tarfile
 import time
 import urllib2
 import json
+import sys
 from optparse import OptionParser
 
 SUCCESS_CODE = 0
@@ -67,7 +69,7 @@ def retrier(attempts=5, sleeptime=7, max_sleeptime=300, sleepscale=1.5, jitter=1
 
 
 def get_task_result(url):
-    task_response = urllib2.urlopen(url)
+    task_response = urllib2.urlopen(url, timeout=60)
     task_content = task_response.read()
     task_response.close()
     return json.loads(task_content)['result']
@@ -86,26 +88,27 @@ def get_response_from_task(url, options):
     for _ in retrier(attempts=options.max_retries, sleeptime=options.sleeptime,
                      max_sleeptime=options.max_retries * options.sleeptime):
         task_result = get_task_result(url)
+        log.debug("current task status: %s state: %s", task_result['status'], task_result['state'])
         if task_result['state'] == "SUCCESS":
             break
-        log.info("current task status: " + task_result['status'])
 
     if task_result.get('state') == "SUCCESS":
         if task_result.get('s3_urls'):
             # grab a s3 url using the preferred region if available
             s3_url = task_result['s3_urls'].get(options.region, task_result['s3_urls'].values()[0])
-            return urllib2.urlopen(s3_url)
+            return urllib2.urlopen(s3_url, timeout=60)
         else:
-            log.error("An s3 URL could not be determined even though archiver task completed. Check"
-                      "archiver logs for errors. Task status: %s" % task_result['status'])
-            exit(FAILURE_CODE)
+            log.error("Automation Error: s3 URL could not be determined even though archiver task completed")
+            log.error("Check archiver logs for errors. Task status: %s" % task_result['status'])
+            exit(INFRA_CODE)
     else:
-        log.error("Archiver's task could not be resolved. Check archiver logs for errors. Task "
-                  "status: %s" % task_result['status'])
-        exit(FAILURE_CODE)
+        log.error("Automation Error: task state did not equal SUCCESS")
+        log.error("Check archiver logs for errors. Task status: %s Task state: %s",
+                  task_result['status'], task_result['state'])
+        exit(INFRA_CODE)
 
 
-def get_url_response(url, options):
+def get_url_response(api_url, options):
     """
     queries archiver endpoint and parses response for s3_url. if archiver returns a 202,
     a sub task url is polled until that response is complete.
@@ -114,13 +117,14 @@ def get_url_response(url, options):
     :param options: script options
     :return: response obj
     """
+    fatal_msg = "Automation Error: could not determine a valid url response."
     num = 0
     response = None
     for _ in retrier(attempts=options.max_retries, sleeptime=options.sleeptime,
                      max_sleeptime=options.max_retries * options.sleeptime):
         try:
-            log.info("Getting archive location from %s" % url)
-            response = urllib2.urlopen(url)
+            log.info("Getting archive location from %s" % api_url)
+            response = urllib2.urlopen(api_url, timeout=60)
 
             if response.code == 202:
                 # archiver is taking a long time so it started a sub task
@@ -131,17 +135,18 @@ def get_url_response(url, options):
             else:
                 log.debug("got a bad response. response code: %s", response.code)
 
-        except (urllib2.HTTPError, urllib2.URLError) as e:
+        except (urllib2.HTTPError, urllib2.URLError, ssl.SSLError) as e:
             if num == options.max_retries - 1:
-                log.exception("Could not get a valid response from archiver endpoint.")
+                log.exception(fatal_msg)
                 exit(INFRA_CODE)
         num += 1
 
     if not response.code == 200:
         content = response.read()
-        log.error("could not determine a valid url response. return code: '%s'"
-                  "return content: %s" % (response.code, content))
+        log.error(fatal_msg)
+        log.error("return code: '%s' return content: %s" % (response.code, content))
         exit(INFRA_CODE)
+
     return response
 
 
@@ -164,30 +169,29 @@ def download_and_extract_archive(response, extract_root, destination):
     try:
         tar = tarfile.open(fileobj=response, mode='r|gz')
         log.debug("unpacking tar archive at: %s", extract_root)
-        log.debug("checking path contents within tar")
         for member in tar:
-            log.info("checking if internal member %s of archive matches the start of extract_root "
-                     "path.", member.name)
             if not member.name.startswith(extract_root):
                 continue
             member.name = member.name.replace(extract_root, '')
-            log.debug("extracting member %s to destination %s", member.name, destination)
+            if member.issym() and sys.platform in ('win32', 'cygwin'):
+                log.debug('skipping symlink on windows: %s', member.name)
+                continue
             tar.extract(member, destination)
     except tarfile.TarError as e:
-        log.exception("Could not download and extract archive. See Traceback:")
+        log.exception("Automation Error: Could not download and extract archive. See Traceback:")
         exit(INFRA_CODE)
     finally:
         tar.close()
 
 
-def archiver(url, config_key, options):
+def archiver(api_url, config_key, options):
     """
     1) obtains valid s3 url for archive via relengapi's archiver
     2) downloads and extracts archive
     """
     archive_cfg = ARCHIVER_CONFIGS[config_key]  # specifics to the archiver endpoint
 
-    response = get_url_response(url, options)
+    response = get_url_response(api_url, options)
 
     # get the root path within the archive that will be the starting path of extraction
     subdir = options.subdir or archive_cfg.get('default_extract_subdir')
@@ -236,6 +240,10 @@ def options_args():
     if not len(args) == 1:
         parser.error("archiver_client.py requires exactly 1 argument: the archiver config. "
                      "Valid configs: %s" % str(ARCHIVER_CONFIGS.keys()))
+
+    if options.rev and len(options.rev) > 12:
+        log.warning("truncating revision to first 12 chars")
+        options.rev = options.rev[0:12]
 
     if options.debug:
         log.setLevel(logging.DEBUG)
@@ -296,7 +304,7 @@ def main():
     if subdir:
         api_url += "&subdir=%s" % (subdir,)
 
-    archiver(url=api_url, config_key=config, options=options)
+    archiver(api_url=api_url, config_key=config, options=options)
 
     exit(SUCCESS_CODE)
 
