@@ -44,11 +44,10 @@ running_buckets = {}
 completed_masters = {}
 master_ids = {}
 SLEEP_INTERVAL = 60
-ssh_key = "/Users/ccooper/.ssh/id_dsa"
 username = "cltbld"
 slavealloc_api_url = "https://secure.pub.build.mozilla.org/slavealloc/api/masters"
-ldap_username = None
-ldap_password = None
+ldap_username = ""
+ldap_password = ""
 
 def IgnorePolicy():
     def missing_host_key(self, *args):
@@ -86,7 +85,7 @@ class MasterConsole(ssh.SSHConsole):
         try:
             log.debug("Attempting to connect to %s as %s" % (self.fqdn, username))
             self.client.load_system_host_keys()
-            self.client.connect(hostname=self.fqdn, username=username, key_filename=ssh_key, allow_agent=False)
+            self.client.connect(hostname=self.fqdn, username=username, allow_agent=True)
             log.info("Connection as %s succeeded!", username)
             self.connected = True
         except AuthenticationException, e:
@@ -123,7 +122,36 @@ def stop_master(master):
     log.warning("Failed to stop %s, or never saw stop finish." % master['hostname'])
     return False
 
-def get_master_ids():
+def parse_bash_env_var_from_string(match_string, line):
+    line = line.strip()
+    key,value = line.split("=", 2)
+    return value.strip(' \'\"')
+
+def get_ldap_creds(config_file=None):
+    ldap_username = ""
+    ldap_password = ""
+    if config_file and os.path.exists(config_file):
+        with open(config_file, 'r') as f:
+            for line in f:
+                if 'LDAP_USERNAME' in line:
+                    ldap_username = parse_bash_env_var_from_string('LDAP_USERNAME', line)
+                elif 'LDAP_PASSWORD' in line:
+                    ldap_password = parse_bash_env_var_from_string('LDAP_PASSWORD', line)
+        f.closed
+        if not ldap_username or not ldap_password:
+            log.warn("Unable to parse LDAP credentials from config file: %s" % config_file)
+    if not ldap_username or not ldap_password:
+        ldap_username = raw_input("Enter LDAP username: ")
+        ldap_password = getpass.getpass(prompt='Enter LDAP password: ')
+    if not ldap_username:
+        log.error("ldap_username not set.")
+        return None
+    if not ldap_password:
+        log.error("ldap_password not set.")
+        return None
+    return ldap_username, ldap_password
+
+def get_master_ids(ldap_username, ldap_password):
     r = requests.get(slavealloc_api_url, auth=(ldap_username,ldap_password))
     if r.status_code != 200:
         log.error("Unable to retrieve masters from slavealloc. Check LDAP credentials.")
@@ -241,6 +269,7 @@ if __name__ == '__main__':
                         help="Enable extra debug output")
     parser.add_argument("-m", "--masters-json", action="store", dest="masters_json", help="JSON file containing complete list of masters", required=True)
     parser.add_argument("-l", "--limit-to-masters", action="store", dest="limit_to_masters", help="Test file containing list of masters to restart, one per line", default=None)
+    parser.add_argument("-c", "--config", action="store", dest="config_file", help="Text file containing config variables in bash format", required=False)
 
     args = parser.parse_args()
 
@@ -253,13 +282,14 @@ if __name__ == '__main__':
         log.error("Masters JSON file ('%s') does not exist. Exiting..." % args.masters_json)
         sys.exit(1)
 
-    ldap_username = raw_input("Enter LDAP username: ")
-    ldap_password = getpass.getpass(prompt='Enter LDAP password: ')
+    ldap_username, ldap_password = get_ldap_creds(args.config_file)
+    if not ldap_username or not ldap_password:
+        sys.exit(2)
 
     # Getting the master IDs allown us to valid the LDAP credentials while also
     # getting a list of master IDS we can use when disabling masters in slavealloc.
-    if not get_master_ids():
-        sys.exit(2)
+    if not get_master_ids(ldap_username, ldap_password):
+        sys.exit(3)
 
     master_list = []
     if args.limit_to_masters:
