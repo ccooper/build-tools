@@ -30,14 +30,7 @@ from paramiko import AuthenticationException
 from slaveapi.clients import ssh
 
 import logging
-from logging.handlers import RotatingFileHandler
 log = logging.getLogger(__name__)
-handler = RotatingFileHandler("restart_masters.log",
-                              maxBytes=52428800,
-                              backupCount=10)
-formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-handler.setFormatter(formatter)
-log.addHandler(handler)
 
 buckets = {}
 running_buckets = {}
@@ -113,7 +106,7 @@ def get_console(hostname):
 def stop_master(master):
     # For scheduler masters, we just stop them.
     log.info("Stopping %s" % master['hostname'])
-    cmd = "cd %s; source bin/activate; make stop" % master['basedir']
+    cmd = "cd %s; source bin/activate; touch reconfig.lock; make stop" % master['basedir']
     console = get_console(master['hostname'])
     rc, output = console.run_cmd(cmd)
     if rc == 0:
@@ -205,7 +198,18 @@ def graceful_shutdown(master):
     shutdown_url.port = master['http_port']
     shutdown_url.path = "shutdown"
     error_msg = "Failed to initiate graceful shutdown for %s" % master['hostname']
-    return http_post(str(shutdown_url), error_msg)
+    if http_post(str(shutdown_url), error_msg):
+        log.info("Creating reconfig lockfile for master: %s" % master['hostname'])
+        cmd = "cd %s; touch reconfig.lock" % master['basedir']
+        console = get_console(master['hostname'])
+        rc, output = console.run_cmd(cmd)
+        if rc == 0:
+            log.info("Created lockfile on master: %s." % master['hostname'])
+            return True
+        log.warning("Error creating lockfile on master: %s" % master['hostname'])
+        return False
+    else:
+        return False
 
 def check_shutdown_status(master):
     # Returns true when there is no matching master process.
@@ -227,7 +231,7 @@ def check_shutdown_status(master):
 def restart_master(master):
     # Restarts buildbot on the remote master
     log.info("Attempting to restart master: %s" % master['hostname'])
-    cmd = "cd %s; source bin/activate; make start" % master['basedir']
+    cmd = "cd %s; source bin/activate; make start; rm -f reconfig.lock" % master['basedir']
     console = get_console(master['hostname'])
     rc, output = console.run_cmd(cmd)
     if rc == 0:
@@ -267,16 +271,29 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Gracefully restart a list of buildbot masters')
     parser.add_argument("-v", "--verbose", dest="verbose", action="store_true",
                         help="Enable extra debug output")
+    parser.add_argument("-vv", "--very-verbose", dest="very_verbose", action="store_true",
+                        help="Enable extra debug output for ssh connections")
     parser.add_argument("-m", "--masters-json", action="store", dest="masters_json", help="JSON file containing complete list of masters", required=True)
     parser.add_argument("-l", "--limit-to-masters", action="store", dest="limit_to_masters", help="Test file containing list of masters to restart, one per line", default=None)
     parser.add_argument("-c", "--config", action="store", dest="config_file", help="Text file containing config variables in bash format", required=False)
 
     args = parser.parse_args()
 
-    if args.verbose:
-        logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+    # Setup logging
+    #
+    # Some of the modules we use here are very chatty (e.g. paramiko). We set the default log level
+    # low with an option to increase if we're debugging a submodule issue.
+    if args.very_verbose:
+        logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
     else:
-        logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+        logging.basicConfig(level=logging.WARNING, format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
+
+    # The default log level for this script is slightly higher (INFO) because it's presumed we care
+    # about the output.
+    if args.verbose:
+        log.setLevel(logging.DEBUG)
+    else:
+        log.setLevel(logging.INFO)
 
     if not os.path.isfile(args.masters_json):
         log.error("Masters JSON file ('%s') does not exist. Exiting..." % args.masters_json)
