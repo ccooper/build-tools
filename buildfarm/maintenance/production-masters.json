@@ -28,7 +28,7 @@
       "android-x86",
       "android-api-9",
       "android-api-11",
-      "android"
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux"
@@ -74,7 +74,7 @@
       "android-x86",
       "android-api-9",
       "android-api-11",
-      "android"
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux"
@@ -120,7 +120,7 @@
       "android-x86",
       "android-api-9",
       "android-api-11",
-      "android"
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux"
@@ -166,7 +166,7 @@
       "android-x86",
       "android-api-9",
       "android-api-11",
-      "android"
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux"
@@ -212,7 +212,7 @@
       "android-x86",
       "android-api-9",
       "android-api-11",
-      "android"
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux"
@@ -258,7 +258,7 @@
       "android-x86",
       "android-api-9",
       "android-api-11",
-      "android"
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux"
@@ -304,7 +304,7 @@
       "android-x86",
       "android-api-9",
       "android-api-11",
-      "android"
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux"
@@ -350,7 +350,7 @@
       "android-x86",
       "android-api-9",
       "android-api-11",
-      "android"
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux"
@@ -409,23 +409,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -486,23 +482,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -563,23 +555,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -640,23 +628,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -717,23 +701,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -794,23 +774,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -841,10 +817,10 @@
     "buildbot_setup": "/builds/buildbot/tests1-windows/buildbot/master/setup.py",
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
-    "db_name": "buildbot-master69.srv.releng.use1.mozilla.com:/builds/buildbot/tests1-windows/master",
+    "db_name": "buildbot-master69.bb.releng.use1.mozilla.com:/builds/buildbot/tests1-windows/master",
     "enabled": false,
     "environment": "production",
-    "hostname": "buildbot-master69.srv.releng.use1.mozilla.com",
+    "hostname": "buildbot-master69.bb.releng.use1.mozilla.com",
     "http_port": 8201,
     "limit_fx_platforms": [
       "win32",
@@ -1364,7 +1340,7 @@
     "limit_fx_platforms": [],
     "limit_mobile_platforms": [
         "android-api-11",
-        "android"
+        "android-api-15"
     ],
     "limit_tb_platforms": [],
     "limit_b2g_platforms": [],
@@ -1452,7 +1428,7 @@
     "limit_fx_platforms": [],
     "limit_mobile_platforms": [
         "android-api-11",
-        "android"
+        "android-api-15"
     ],
     "limit_tb_platforms": [],
     "limit_b2g_platforms": [],
@@ -1484,7 +1460,7 @@
     "limit_fx_platforms": [],
     "limit_mobile_platforms": [
         "android-api-11",
-        "android"
+        "android-api-15"
     ],
     "limit_tb_platforms": [],
     "limit_b2g_platforms": [],
@@ -1516,7 +1492,7 @@
     "limit_fx_platforms": [],
     "limit_mobile_platforms": [
         "android-api-11",
-        "android"
+        "android-api-15"
     ],
     "limit_tb_platforms": [],
     "limit_b2g_platforms": [],
@@ -1556,8 +1532,7 @@
     },
     "limit_mobile_platforms": [
       "android-x86",
-      "android-api-9",
-      "android"
+      "android-api-9"
     ],
     "limit_tb_platforms": [
       "linux",
@@ -1607,8 +1582,7 @@
     },
     "limit_mobile_platforms": [
       "android-x86",
-      "android-api-9",
-      "android"
+      "android-api-9"
     ],
     "limit_tb_platforms": [
       "linux",
@@ -1658,8 +1632,7 @@
     },
     "limit_mobile_platforms": [
       "android-x86",
-      "android-api-9",
-      "android"
+      "android-api-9"
     ],
     "limit_tb_platforms": [
       "linux",
@@ -1706,7 +1679,6 @@
         "macosx64"
     ],
     "limit_b2g_platforms": [
-        "macosx64_gecko"
     ],
     "master_dir": "/builds/buildbot/tests1-macosx/master",
     "name": "bm106-tests1-macosx",
@@ -1741,7 +1713,6 @@
         "macosx64"
     ],
     "limit_b2g_platforms": [
-        "macosx64_gecko"
     ],
     "master_dir": "/builds/buildbot/tests1-macosx/master",
     "name": "bm107-tests1-macosx",
@@ -1776,7 +1747,6 @@
         "macosx64"
     ],
     "limit_b2g_platforms": [
-        "macosx64_gecko"
     ],
     "master_dir": "/builds/buildbot/tests1-macosx/master",
     "name": "bm108-tests1-macosx",
@@ -1964,23 +1934,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -2041,23 +2007,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -2118,23 +2080,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -2195,23 +2153,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -2272,23 +2226,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -2349,23 +2299,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -2460,23 +2406,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -2537,23 +2479,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -2614,23 +2552,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -2691,23 +2625,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -2768,23 +2698,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -2845,23 +2771,19 @@
       ]
     },
     "limit_mobile_platforms": [
-      "android",
       "android-api-9",
-      "android-api-11"
+      "android-api-11",
+      "android-api-15"
     ],
     "limit_tb_platforms": [
       "linux64"
     ],
     "limit_b2g_platforms": [
-      "linux64_gecko",
       "emulator-jb",
       "emulator-kk",
       "emulator"
     ],
     "limit_b2g_slave_platforms": {
-      "linux64_gecko": [
-        "ubuntu64_vm-b2gdt"
-      ],
       "emulator-jb": [
         "ubuntu64_vm-b2g-emulator-jb"
       ],
@@ -2961,7 +2883,7 @@
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-east-1",
     "db_name": "buildbot-master128.bb.releng.use1.mozilla.com:/builds/buildbot/tests1-windows/master",
-    "enabled": false,
+    "enabled": true,
     "environment": "production",
     "hostname": "buildbot-master128.bb.releng.use1.mozilla.com",
     "http_port": 8201,
@@ -2995,7 +2917,7 @@
     "buildbot_version": "0.8.2",
     "datacentre": "aws-us-west-2",
     "db_name": "buildbot-master129.bb.releng.usw2.mozilla.com:/builds/buildbot/tests1-windows/master",
-    "enabled": false,
+    "enabled": true,
     "environment": "production",
     "hostname": "buildbot-master129.bb.releng.usw2.mozilla.com",
     "http_port": 8201,

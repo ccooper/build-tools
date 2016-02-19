@@ -64,12 +64,58 @@ $(document).ready(function() {
         group.find('.all-selector').prop('checked', unchecked_defaults.length == 0);
     });
 
+    // Track the last change. If shift is pressed when clicking one item,
+    // also apply the target state to all items in between.
+    var last_changed;
+    var all_items = $(':checkbox:not(.group-selector):not(.subgroup-selector)');
+    $('label').filter(function(index, elem) {
+        var checkbox = $(elem).children(':checkbox');
+        return checkbox.not('.group-selector, .subgroup-selector').size() > 0;
+    }).mouseup(function(evt) {
+        if (evt.shiftKey && last_changed >= 0) {
+            var checkbox = $(this).children(':checkbox');
+            var checked = !checkbox.prop('checked');
+            var index = all_items.index(checkbox);
+            var items;
+            if (last_changed < index) {
+                items = all_items.slice(last_changed + 1, index + 1);
+            } else if (last_changed > index) {
+                items = all_items.slice(index, last_changed);
+            }
+            if (items) {
+                // Use setTimeout to override the state of checkboxes to
+                // work around difference of default behavior between
+                // different browsers.
+                // More specifically, on Firefox, any click on checkboxs
+                // flips the state, while click on labels takes effect
+                // only if no modifier key is pressed. While on Chrome,
+                // any click on both elements always takes effect.
+                setTimeout(() => {
+                    items.prop('checked', checked);
+                    setresult();
+                }, 0);
+            }
+        }
+    });
+
+    //
+    $.getJSON('https://hg.mozilla.org/mozilla-central/raw-file/tip/testing/talos/talos.json',
+              function(data) {
+                  Object.keys(data.suites).forEach(function(suiteName) {
+                      var suite = data.suites[suiteName];
+                      $('input[value=' + suiteName + ']').parent().attr(
+                          'title', suite.tests.join(' '));
+                  });
+              });
     // Force initial update
     $('.all-selector:checked').change();
     $('.none-selector:checked').change();
 
     // Selecting anything should update the try syntax
-    $(':checkbox').change(setresult);
+    $(':checkbox').change(function() {
+        last_changed = all_items.index(this);
+        setresult();
+    });
     $(':radio').change(setresult);
     $(':text').change(setresult);
 
@@ -112,7 +158,6 @@ function setresult() {
             args.push(arg);
     });
 
-    var have_projects = {};
     $('.option-group[try-section]').each(function() {
         var tryopt = $(this).attr('try-section');
         var arg = '-' + tryopt + ' ';
@@ -131,9 +176,6 @@ function setresult() {
             })
             options.each(function(i,elt){
                 names.push($(elt).attr('value'));
-                var project = $(elt).attr('data-project');
-                if (project)
-                    have_projects[project] = true;
             });
         }
 
@@ -143,7 +185,8 @@ function setresult() {
         });
 
         var filters = [];
-        $('[try-filter=' + tryopt + '] :checked').each(function () {
+        var filter_tryopt = tryopt == 't' ? 'u' : tryopt;
+        $('[try-filter=' + filter_tryopt + '] :checked').each(function () {
             filters.push.apply(filters, $(this).attr('value').split(','));
         });
         if (filters.length > 0) {
@@ -167,12 +210,17 @@ function setresult() {
         args.push('--rebuild-talos 5');
     }
 
-    var tag = $('.tags').val();
+    var tag = $('#tags').val();
     if (tag) {
         args.push('--tag ' + tag);
     }
 
-    var rebuilds = parseInt($('.rebuilds').val(), 10);
+    var setenv = $('#setenv').val();
+    if (setenv) {
+        args.push('--setenv ' + setenv);
+    }
+
+    var rebuilds = parseInt($('#rebuilds').val(), 10);
     if (rebuilds) {
         args.push('--rebuild ' + rebuilds);
     }
@@ -192,6 +240,13 @@ function setresult() {
         incomplete = true;
     } else {
         $('#platforms-none').removeClass('attention');
+    }
+
+    if (value.match(/mochitest-browser-screenshots/) && !value.match(/MOZSCREENSHOTS_SETS=./)) {
+        $('#setenv').addClass('attention');
+        incomplete = true;
+    } else {
+        $('#setenv').removeClass('attention');
     }
 
     if (incomplete) {
